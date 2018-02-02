@@ -3,30 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+namespace NetworkShooter
 {
-    private readonly System.Random _random = new System.Random();
-    private const int MinDmg = 7;
-    private const int MaxDmg = 11;
-    private int _damage;
-
-    private void OnCollisionEnter(Collision collision)
+    public class Bullet : MonoBehaviour
     {
-        GameObject hit = collision.gameObject;
-        var health = hit.GetComponent<Health>();
-        _damage = _random.Next(MinDmg, MaxDmg);
+        private readonly System.Random _random = new System.Random();
+        private const int MinDmg = 7;
+        private const int MaxDmg = 11;
+        private int _damage;
 
-        if (health != null)
+        private void OnCollisionEnter(Collision collision)
         {
-            health.TakeDamage(_damage);
-        }
+            GameObject hit = collision.gameObject;
+            var health = hit.GetComponent<Health>();
+            _damage = _random.Next(MinDmg, MaxDmg);
 
-        Debug.Log("Bullet collided with " + hit.name + ", and produced " + _damage + " DMG");
-        if (_damage >= MaxDmg - 1)
-        {
-            Debug.Log("CRITICAL!");
-        }
+            if (health != null)
+            {
+                health.TakeDamage(_damage);
+            }
 
-        Destroy(gameObject);
+            Debug.Log("Bullet collided with " + hit.name + ", and produced " + _damage + " DMG");
+            if (_damage >= MaxDmg - 1)
+            {
+                Debug.Log("CRITICAL!");
+            }
+
+            Destroy(gameObject);
+        }
     }
 }

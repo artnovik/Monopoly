@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Billboard : MonoBehaviour
+namespace NetworkShooter
 {
-    private void Update()
+    public class Billboard : MonoBehaviour
     {
-        transform.LookAt(Camera.main.transform);
+        private void Update()
+        {
+            transform.LookAt(Camera.main.transform);
+        }
     }
 }

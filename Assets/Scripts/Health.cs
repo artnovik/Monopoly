@@ -4,34 +4,50 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class Health : NetworkBehaviour
+namespace NetworkShooter
 {
-    public RectTransform healthBar;
-
-    public const int MaxHealth = 100;
-
-    [SyncVar(hook = "OnChangeHealth")]
-    public int currentHealth = MaxHealth;
-
-    public void TakeDamage(int amount)
+    public class Health : NetworkBehaviour
     {
-        if (!isServer)
+        public RectTransform healthBar;
+
+        public const int MaxHealth = 100;
+
+        [SyncVar(hook = "OnChangeHealth")]
+        public int currentHealth = MaxHealth;
+
+        public void TakeDamage(int amount)
         {
-            return;
+            if (!isServer)
+            {
+                return;
+            }
+
+            currentHealth -= amount;
+
+            if (currentHealth <= 0)
+            {
+                currentHealth = MaxHealth;
+
+                // Called on the Server, but invoked on the Clients
+                RpcRespawn();
+                Debug.Log(gameObject.name + " is dead, but respawned");
+            }
         }
 
-        currentHealth -= amount;
-
-        if (currentHealth <= 0)
+        private void OnChangeHealth(int currentHealth)
         {
-            currentHealth = 0;
-            Debug.Log(gameObject.name + " is dead");
+            healthBar.sizeDelta = new Vector2(currentHealth, healthBar.sizeDelta.y);
+
         }
-    }
 
-    private void OnChangeHealth(int currentHealth)
-    {
-        healthBar.sizeDelta = new Vector2(currentHealth, healthBar.sizeDelta.y);
-
+        [ClientRpc]
+        private void RpcRespawn()
+        {
+            if (isLocalPlayer)
+            {
+                // Move back to zero location
+                transform.position = Vector3.zero;
+            }
+        }
     }
 }
