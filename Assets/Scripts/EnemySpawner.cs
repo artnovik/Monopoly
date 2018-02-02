@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace Network
+namespace NetworkShooter
 {
     public class EnemySpawner : NetworkBehaviour
     {
