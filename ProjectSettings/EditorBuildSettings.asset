@@ -9,5 +9,5 @@ EditorBuildSettings:
     path: Assets/Scenes/GameScene.unity
     guid: 2f9bcc3682e4ebe4ca48671c76973276
   - enabled: 1
-    path: Assets/Scenes/NetworkScene.unity
+    path: Assets/_Network_Shooter/NetworkScene.unity
     guid: 50375e70f3ba56a40828080235db2cb2

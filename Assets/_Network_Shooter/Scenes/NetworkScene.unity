@@ -274,26 +274,6 @@ Prefab:
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 114105334553236904, guid: 22daca9a72c47c64da4920e422fa871d,
-        type: 2}
-      propertyPath: m_PlayerSpawnMethod
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 114105334553236904, guid: 22daca9a72c47c64da4920e422fa871d,
-        type: 2}
-      propertyPath: m_ServerBindToIP
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114105334553236904, guid: 22daca9a72c47c64da4920e422fa871d,
-        type: 2}
-      propertyPath: m_UseWebSockets
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114105334553236904, guid: 22daca9a72c47c64da4920e422fa871d,
-        type: 2}
-      propertyPath: m_NetworkAddress
-      value: localhost
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 22daca9a72c47c64da4920e422fa871d, type: 2}
   m_IsPrefabParent: 0
