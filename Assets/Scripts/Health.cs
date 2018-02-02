@@ -12,6 +12,8 @@ namespace NetworkShooter
 
         public const int MaxHealth = 100;
 
+        public bool destroyOnDeath;
+
         [SyncVar(hook = "OnChangeHealth")]
         public int currentHealth = MaxHealth;
 
@@ -26,11 +28,18 @@ namespace NetworkShooter
 
             if (currentHealth <= 0)
             {
-                currentHealth = MaxHealth;
+                if (destroyOnDeath)
+                {
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    currentHealth = MaxHealth;
 
-                // Called on the Server, but invoked on the Clients
-                RpcRespawn();
-                Debug.Log(gameObject.name + " is dead, but respawned");
+                    // Called on the Server, but invoked on the Clients
+                    RpcRespawn();
+                    Debug.Log(gameObject.name + " is dead, but respawned");
+                }
             }
         }
 
