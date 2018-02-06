@@ -1,40 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.UI;
 
-public class HostGame : MonoBehaviour
+namespace Monopoly
 {
-	[SerializeField]
-	private uint roomSize = 5;
-
-	private string roomName;
-
-	private NetworkManager networkManager;
-
-	private void Start()
+	public class HostGame : MonoBehaviour
 	{
-		networkManager = NetworkManager.singleton;
+		[SerializeField]
+		private uint roomSize = 5;
 
-		if (networkManager.matchMaker == null)
+		private string roomName;
+
+		private NetworkManager networkManager;
+
+		private void Start()
 		{
-			networkManager.StartMatchMaker();
+			networkManager = NetworkManager.singleton;
+
+			if (networkManager.matchMaker == null)
+			{
+				networkManager.StartMatchMaker();
+			}
 		}
-	}
 
-	public void SetRoomName(string _name)
-	{
-		roomName = _name;
-	}
-
-	public void CreateRoom()
-	{
-		if (!string.IsNullOrEmpty(roomName))
+		public void SetRoomName(InputField inputFieldRoomNameText)
 		{
-			Debug.Log("Creating Room: " + roomName + " for " + roomSize + " players");
-			// Create Room
+			roomName = inputFieldRoomNameText.GetComponent<InputField>().text;
+		}
 
-			networkManager.matchMaker.CreateMatch(roomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
+		public void CreateRoom()
+		{
+			if (!string.IsNullOrEmpty(roomName))
+			{
+				Debug.Log("Creating Room: " + roomName + " for " + roomSize + " players");
+				// Create Room
+
+				networkManager.matchMaker.CreateMatch(roomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
+			}
 		}
 	}
 }
