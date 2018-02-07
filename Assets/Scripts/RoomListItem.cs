@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
 using UnityEngine.UI;
 
@@ -24,4 +25,13 @@ public class RoomListItem : MonoBehaviour
 	{
 		joinRoomCallback.Invoke(match);
 	}
+
+	//ToDo Move this Method into actual Gameplay
+	// Disconnect
+	/*public void LeaveRoom()
+	{
+		MatchInfo matchInfo = networkManager.matchInfo;
+		networkManager.matchMaker.DropConnection(networkManager.networkId, matchInfo.nodeId, 0, networkManager.OnDropConnection);
+		networkManager.StopHost();
+	}*/
 }

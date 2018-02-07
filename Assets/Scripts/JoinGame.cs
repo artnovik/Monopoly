@@ -45,7 +45,7 @@ namespace Monopoly
 		{
 			status.text = "";
 
-			if (matchList == null)
+			if (!success || matchList == null)
 			{
 				status.text = "Couldn't get room list.";
 				return;
@@ -62,10 +62,6 @@ namespace Monopoly
 				{
 					_roomListItem.Setup(match, JoinRoom);
 				}
-
-
-
-				// as well as setting up a callback function that will join the game.
 
 				roomList.Add(_roomListItemGO);
 			}
