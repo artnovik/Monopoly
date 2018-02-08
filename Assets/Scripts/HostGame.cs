@@ -33,7 +33,6 @@ namespace Monopoly
 			if (!string.IsNullOrEmpty(roomName))
 			{
 				Debug.Log("Creating Room: " + roomName + " for " + roomSize + " players");
-				// Create Room
 
 				networkManager.matchMaker.CreateMatch(roomName, roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
 			}
