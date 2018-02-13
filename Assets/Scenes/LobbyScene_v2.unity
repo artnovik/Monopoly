@@ -851,7 +851,7 @@ MonoBehaviour:
     type: 2}
   buttonConnectParent: {fileID: 1819091307}
   status: {fileID: 1458920501}
-  roomSize: 5
+  roomSize: 6
   roomName: Monopoly
   playerName: 
   colorProcess:

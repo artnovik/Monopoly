@@ -20,11 +20,12 @@ namespace Monopoly.Lobby_v2
 		public Text status;
 
 		[SerializeField]
-		private uint roomSize = 5;
+		private uint roomSize = 6;
 
 		[SerializeField]
 		private string roomName = "Monopoly";
 
+		[HideInInspector]
 		public string playerName;
 
 		private bool InternetOn;
