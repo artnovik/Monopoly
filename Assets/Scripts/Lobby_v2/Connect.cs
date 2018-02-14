@@ -9,7 +9,9 @@ namespace Monopoly.Lobby_v2
 		public delegate void JoinRoomDelegate(MatchInfoSnapshot _match);
 		private JoinRoomDelegate joinRoomCallback;
 
-		public MatchInfoSnapshot match;
+	    private LobbyManager _lobbyManager;
+
+        public MatchInfoSnapshot match;
 
 		public void Setup(MatchInfoSnapshot _match, JoinRoomDelegate _joinRoomCallback)
 		{
@@ -19,8 +21,9 @@ namespace Monopoly.Lobby_v2
 
 		public void JoinRoom()
 		{
-			LobbyManager _lobbyManager = GameObject.Find("Network Manager").GetComponent<LobbyManager>();
-			_lobbyManager.playerName = GameObject.Find("InputFieldName").GetComponent<InputField>().text;
+		    _lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+
+            _lobbyManager.playerName = GameObject.Find("InputFieldName").GetComponent<InputField>().text;
 
 			// Checking PlayerName Input
 			if (string.IsNullOrEmpty(_lobbyManager.playerName))

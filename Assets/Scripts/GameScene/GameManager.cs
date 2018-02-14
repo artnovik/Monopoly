@@ -5,10 +5,9 @@ using UnityEngine.Networking;
 
 public class GameManager : MonoBehaviour
 {
-
     private void Start()
     {
-
+        Debug.Log("Starting");
     }
 
     private void Update()
