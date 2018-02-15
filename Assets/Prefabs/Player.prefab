@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 114395971021758432}
   - component: {fileID: 114561920026889646}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,6 +43,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4052325508027682}
   - component: {fileID: 114411082201150810}
+  - component: {fileID: 114296703046940946}
+  - component: {fileID: 114251435690842826}
+  - component: {fileID: 114668968895308946}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -119,7 +122,7 @@ AudioListener:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1798706987825786}
-  m_Enabled: 0
+  m_Enabled: 1
 --- !u!92 &92744315627321734
 Behaviour:
   m_ObjectHideFlags: 1
@@ -127,6 +130,34 @@ Behaviour:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1798706987825786}
   m_Enabled: 1
+--- !u!114 &114251435690842826
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1880536654410456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78614011ade953740aebecaf810bb84a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  name: 
+  score: 0
+--- !u!114 &114296703046940946
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1880536654410456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 452f26bd4fa757340a5ed988bc7d3173, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  componentsToDisable:
+  - {fileID: 114668968895308946}
+  - {fileID: 81125372961661364}
+  - {fileID: 114251435690842826}
 --- !u!114 &114395971021758432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -183,7 +214,7 @@ MonoBehaviour:
     i14: 90
     i15: 226
   m_ServerOnly: 0
-  m_LocalPlayerAuthority: 0
+  m_LocalPlayerAuthority: 1
 --- !u!114 &114547312124934310
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -211,6 +242,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   profile: {fileID: 11400000, guid: 6f9822f3004b864449aa5fcf5217dfeb, type: 2}
+--- !u!114 &114668968895308946
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1880536654410456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18a3c30d72986ae48b4f22fe5fb23f2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114713119895833934
 MonoBehaviour:
   m_ObjectHideFlags: 1

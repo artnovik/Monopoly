@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
 {
     private void Start()
     {
-        Debug.Log("Starting");
+        Debug.Log("GameManager started.");
     }
 
     private void Update()

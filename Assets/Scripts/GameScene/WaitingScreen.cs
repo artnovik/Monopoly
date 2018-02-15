@@ -5,13 +5,12 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-
 public class WaitingScreen : NetworkBehaviour
 {
     private GameObject networkManagerGO;
-    private LobbyManager lobbyManager;
 
-    private GameManager GameManagerScript;
+    [SerializeField]
+    private GameObject GameManagerGo;
 
     private int playerCount;
 
@@ -21,32 +20,44 @@ public class WaitingScreen : NetworkBehaviour
     // Use this for initialization
     private void Start()
     {
-        GameManagerScript = gameObject.GetComponent<GameManager>();
-
+        GameManagerGo.SetActive(false);
         networkManagerGO = GameObject.Find("Network Manager");
-        lobbyManager = networkManagerGO.GetComponent<LobbyManager>();
+
+        //if (!isLocalPlayer)
+        //{
+        //    CmdInitPlayerNames();
+        //}
     }
 
     public void OnServerConnect(NetworkConnection _connection)
     {
-        Debug.Log("Player Joined");
-        playerNames[playerCount].text = PlayerPrefs.GetString("PlayerName");
+        Debug.Log("Player J!");
+    }
 
-        playerCount++;
-
-        //if (_connection.hostId >= 0)
-        //{
-        //    Debug.Log("New Player has joined");
-        //}
+    private void Update()
+    {
+        if (NetworkServer.active)
+        {
+            RpcInitPlayerNames();
+        }
     }
 
     // ToDo: Start when all are joined
     private IEnumerator StartGM()
     {
         const float delay = 5f;
+
         yield return new WaitForSeconds(delay);
 
-        // Gameplay start point
-        GameManagerScript.enabled = true;
+        // Gameplay start point, and disable itself
+        GameManagerGo.SetActive(true);
+        gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    private void RpcInitPlayerNames()
+    {
+        Debug.Log(Network.connections.Length);
+        playerNames[Network.connections.Length].text = PlayerPrefs.GetString("PlayerName");
     }
 }
