@@ -4,51 +4,45 @@ using UnityEngine.Video;
 
 public class Question
 {
-    private int scoreValue;
-
-    private string type;
-    private string questionText;
-    private int questionAnswersCount;
-
-    public void SetScoreValue(int _scoreValue)
-    {
-        scoreValue = _scoreValue;
-    }
-
-    ///// <summary>
-    ///// Sets the Question type: 0 - Text, 1 - Image, 2 - Video
-    ///// </summary>
-    ///// <param name="typeNumber"></param>
-    //public void SetType(int typeNumber)
-    //{
-    //    switch (typeNumber)
-    //    {
-    //        case 0:
-    //            type = "Text";
-    //            break;
-    //        case 1:
-    //            type = "Image";
-    //            break;
-    //        case 2:
-    //            type = "Video";
-    //            break;
-    //        default:
-    //            break;
-    //    }
-    //}
+    protected uint scoreValue;
+    protected uint rightAnswerNumber;
+    //protected string rightAnswerText;
+    //protected uint questionAnswersCount;
 }
+
 
 public class QuestionText : Question
 {
-    private Image imageText;
+    private string questionText;
+
+    public QuestionText(uint _scoreValue, string _questionText, uint _rightAnswerNumber)
+    {
+        scoreValue = _scoreValue;
+        questionText = _questionText;
+        rightAnswerNumber = _rightAnswerNumber;
+    }
 }
 
-public class QuestionPhoto : Question
+public class QuestionImage : Question
 {
-    private Image photo;
+    private Image questionImage;
+
+    public QuestionImage(uint _scoreValue, Image _questionImage, uint _rightAnswerNumber)
+    {
+        scoreValue = _scoreValue;
+        questionImage = _questionImage;
+        rightAnswerNumber = _rightAnswerNumber;
+    }
 }
 
 public class QuestionVideo : Question
 {
-    private VideoClip video;
+    private VideoClip questionVideo;
+
+    public QuestionVideo(uint _scoreValue, VideoClip _questionVideo, uint _rightAnswerNumber)
+    {
+        scoreValue = _scoreValue;
+        questionVideo = _questionVideo;
+        rightAnswerNumber = _rightAnswerNumber;
+    }
 }

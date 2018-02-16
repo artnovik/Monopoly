@@ -7,12 +7,11 @@ using UnityEngine.UI;
 
 public class WaitingScreen : NetworkBehaviour
 {
-    private GameObject networkManagerGO;
-
     [SerializeField]
     private GameObject GameManagerGo;
 
-    private int playerCount;
+    [SerializeField] private GameObject waitingScreenUI_GO;
+    [SerializeField] private GameObject readyText_GO;
 
     [SerializeField]
     private Text[] playerNames;
@@ -20,44 +19,56 @@ public class WaitingScreen : NetworkBehaviour
     // Use this for initialization
     private void Start()
     {
+        waitingScreenUI_GO.SetActive(true);
         GameManagerGo.SetActive(false);
-        networkManagerGO = GameObject.Find("Network Manager");
+
+        StartCoroutine(StartGM());
 
         //if (!isLocalPlayer)
         //{
-        //    CmdInitPlayerNames();
+        //    InitPlayerNames();
         //}
     }
 
-    public void OnServerConnect(NetworkConnection _connection)
+    // ToDo Networking functionality [1]
+
+    /*public void OnServerConnect(NetworkConnection _connection)
     {
         Debug.Log("Player J!");
-    }
+    }*/
 
-    private void Update()
+    // ToDo Networking functionality [2]
+
+    /*private void Update()
     {
         if (NetworkServer.active)
         {
-            RpcInitPlayerNames();
+            InitPlayerNames();
         }
-    }
+    }*/
 
     // ToDo: Start when all are joined
     private IEnumerator StartGM()
     {
         const float delay = 5f;
 
+        readyText_GO.SetActive(true);
+
         yield return new WaitForSeconds(delay);
 
-        // Gameplay start point, and disable itself
+        // Gameplay start point. Disabling itself - don't need anymore
+        waitingScreenUI_GO.SetActive(false);
         GameManagerGo.SetActive(true);
         gameObject.SetActive(false);
     }
 
-    [ClientRpc]
-    private void RpcInitPlayerNames()
+
+    // ToDo Networking functionality [3]. Initialize Player Names into UI
+
+    //[ClientRpc]
+    private void InitPlayerNames()
     {
-        Debug.Log(Network.connections.Length);
+        //Debug.Log(Network.connections.Length);
         playerNames[Network.connections.Length].text = PlayerPrefs.GetString("PlayerName");
     }
 }
