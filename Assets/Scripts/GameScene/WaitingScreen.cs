@@ -22,6 +22,7 @@ public class WaitingScreen : NetworkBehaviour
         waitingScreenUI_GO.SetActive(true);
         GameManagerGo.SetActive(false);
 
+        // ToDo Move this to "When all joined"
         StartCoroutine(StartGM());
 
         //if (!isLocalPlayer)
@@ -64,7 +65,6 @@ public class WaitingScreen : NetworkBehaviour
 
 
     // ToDo Networking functionality [3]. Initialize Player Names into UI
-
     //[ClientRpc]
     private void InitPlayerNames()
     {

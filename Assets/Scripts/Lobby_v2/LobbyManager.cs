@@ -14,6 +14,9 @@ namespace Monopoly.Lobby_v2
         private GameObject buttonConnect;
 
         [SerializeField]
+        private GameObject buttonCreate;
+
+        [SerializeField]
         private Transform buttonConnectParent;
 
         [HideInInspector]
@@ -70,6 +73,7 @@ namespace Monopoly.Lobby_v2
             if (InternetOn && !roomsExisting)
             {
                 CreateRoom();
+                CancelInvoke("GetRooms");
             }
             else
             {
@@ -86,6 +90,7 @@ namespace Monopoly.Lobby_v2
             status.text = "Game created! Wait a bit...";
 
             networkManager.matchMaker.CreateMatch(roomName + Random.Range(1, 9999999), roomSize, true, "", "", "", 0, 0, networkManager.OnMatchCreate);
+            buttonCreate.GetComponent<Button>().interactable = false;
         }
 
         // Getting all active rooms
@@ -129,6 +134,8 @@ namespace Monopoly.Lobby_v2
 
         public void JoinRoom(MatchInfoSnapshot _match)
         {
+            CancelInvoke("GetRooms");
+            buttonCreate.GetComponent<Button>().interactable = false;
             networkManager.matchMaker.JoinMatch(_match.networkId, "", "", "", 0, 0, networkManager.OnMatchJoined);
             ClearRoomList();
         }
