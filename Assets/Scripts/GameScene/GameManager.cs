@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    private uint answeredQuestionsCount;
+    private int answeredQuestionsCount;
     private bool timerActive;
+    private bool allAnswered;
+    private bool answered;
 
     [Header("Question Window")]
 
@@ -47,37 +49,54 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
-        QuestionPopUp();
+        QuestionPopUp(answeredQuestionsCount);
     }
 
-    private void QuestionPopUp()
+    private void QuestionPopUp(int questionNumber)
     {
         ClearWindow();
-        FillWindow(answeredQuestionsCount);
-        questionWindow.SetActive(true);
-        timerActive = true;
-        StartCoroutine(StartTimer(QuestionsList.question1.duration));
+
+        if (questionNumber < QuestionsList.questionsList.Count)
+        {
+            FillWindow();
+            questionWindow.SetActive(true);
+            timerActive = true;
+            StartCoroutine(StartTimer(QuestionsList.questionsList[questionNumber].duration));
+        }
+        else
+        {
+            questionWindow.SetActive(false);
+            Debug.Log("Final!");
+        }
     }
 
     private IEnumerator StartTimer(int duration)
     {
         int timerTime = 0;
+        timerActive = true;
+
         while (timerActive)
         {
-            yield return new WaitForSeconds(1);
-            timerTime++;
-            timerText.text = timerTime.ToString();
-            timerFillImage.fillAmount += 1f / duration;
+            // Question End
+            if (timerTime < duration /*|| !allAnswered || !answered*/)
+            {
 
-            if (timerTime == duration /*|| allAnswered*/)
+                yield return new WaitForSeconds(1);
+                timerTime++;
+                timerText.text = timerTime.ToString();
+                timerFillImage.fillAmount += 1f / duration;
+            }
+            else
             {
                 timerActive = false;
-                answeredQuestionsCount++;
                 yield return new WaitForSeconds(1);
+                questionWindow.SetActive(false);
                 // MoveFigures();
                 Debug.Log("Question fade out");
-                questionWindow.SetActive(false);
-                StopCoroutine(StartTimer(QuestionsList.question1.duration));
+                answeredQuestionsCount++;
+                yield return new WaitForSeconds(5);
+                QuestionPopUp(answeredQuestionsCount);
+                yield break;
             }
         }
     }
@@ -87,17 +106,14 @@ public class GameManager : MonoBehaviour
         timerText.text = string.Empty;
         questionText.text = string.Empty;
         questionNumberText.text = string.Empty;
+        timerFillImage.fillAmount = 0f;
     }
 
-    private void FillWindow(uint _answeredQuestionsCount)
+    private void FillWindow()
     {
-        uint currentQuestionNumber = ++_answeredQuestionsCount;
-        questionNumberText.text = currentQuestionNumber.ToString();
-        questionText.text = QuestionsList.question1.questionText;
-    }
-
-    private void ConstructQuestion()
-    {
-        // ToDo Generate custom question
+        questionNumberText.text = (answeredQuestionsCount + 1).ToString();
+        questionText.text = QuestionsList.questionsList[answeredQuestionsCount].questionText;
+        // ToDo Answers
+        // Answers
     }
 }

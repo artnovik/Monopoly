@@ -15,7 +15,7 @@ public class PlayerSetup : NetworkBehaviour
     {
         if (!isLocalPlayer /*|| NetworkServer.active*/)
         {
-            // To make sure every Player is unique
+            // To make sure every Player is unique. Also, disabling server as Player
             DisableComponents();
         }
         else
