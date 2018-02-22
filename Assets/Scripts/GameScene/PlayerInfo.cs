@@ -3,10 +3,8 @@ using UnityEngine.Networking;
 
 public class PlayerInfo : NetworkBehaviour
 {
-    [SerializeField]
     private string playerName;
 
-    [SerializeField]
     private uint playerScore;
 
     private void Start()

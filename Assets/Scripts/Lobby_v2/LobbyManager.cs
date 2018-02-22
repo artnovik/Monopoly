@@ -11,6 +11,9 @@ namespace Monopoly.Lobby_v2
         private List<GameObject> roomList = new List<GameObject>();
 
         [SerializeField]
+        private InputField inputFieldName;
+
+        [SerializeField]
         private GameObject buttonConnect;
 
         [SerializeField]
@@ -54,7 +57,25 @@ namespace Monopoly.Lobby_v2
             InvokeRepeating("GetRooms", 0f, 0.5f);
         }
 
-        public void ButtonStartOnClick(InputField inputFieldName)
+        // "Enter" Input Callback
+        //private void Update()
+        //{
+        //    if (Input.GetKeyDown(KeyCode.Return))
+        //    {
+        //        if ((GameObject.FindGameObjectWithTag("Connect") == null) && buttonCreate.GetComponent<Button>().interactable)
+        //        {
+        //            // If no rooms found - create one
+        //            ButtonStartOnClick();
+        //        }
+        //        else
+        //        {
+        //            // If room exists, connect
+        //            buttonConnect.GetComponent<Connect>().JoinRoom();
+        //        }
+        //    }
+        //}
+
+        public void ButtonStartOnClick()
         {
             string inputFieldNameText = inputFieldName.GetComponent<InputField>().text;
 
@@ -84,7 +105,7 @@ namespace Monopoly.Lobby_v2
 
         private void CreateRoom()
         {
-            Debug.Log("Creating Room: " + roomName + " for " + roomSize + " players.");
+            Debug.Log("Creating Room: " + roomName + " for " + (roomSize - roomSize + 1) + " Server + " + (roomSize - 1) + " players");
 
             status.color = colorSuccess;
             status.text = "Game created! Wait a bit...";

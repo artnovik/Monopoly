@@ -11,6 +11,9 @@ public class GameManager : MonoBehaviour
     private bool allAnswered;
     private bool answered;
 
+    [SerializeField]
+    private PlayerInfo playerInfo;
+
     [Header("Question Window")]
 
     [SerializeField]
@@ -21,6 +24,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private Text questionText;
+
+    [SerializeField]
+    private GameObject[] answers_GOs;
 
     [Header("Timer")]
 
@@ -34,7 +40,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager started.");
 
-        // ToDo Question Mechanics
         StartGame();
     }
 
@@ -60,6 +65,12 @@ public class GameManager : MonoBehaviour
         {
             FillWindow();
             questionWindow.SetActive(true);
+
+            Debug.Log("Question: " + (answeredQuestionsCount + 1) +
+                      ". ScoreValue: " + QuestionsList.questionsList[questionNumber].scoreValue +
+                      ". Right answer is: " + QuestionsList.questionsList[questionNumber].rightAnswerNumber +
+                      ". Duration: " + QuestionsList.questionsList[questionNumber].duration);
+
             timerActive = true;
             StartCoroutine(StartTimer(QuestionsList.questionsList[questionNumber].duration));
         }
@@ -113,7 +124,33 @@ public class GameManager : MonoBehaviour
     {
         questionNumberText.text = (answeredQuestionsCount + 1).ToString();
         questionText.text = QuestionsList.questionsList[answeredQuestionsCount].questionText;
+        timerText.text = "0";
+
         // ToDo Answers
-        // Answers
+    }
+
+    public void CheckAnswerClick(GameObject clickedAnswer)
+    {
+        // Badass logic
+
+        for (int i = 0; i < answers_GOs.Length; i++)
+        {
+            if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
+            {
+                Debug.Log("Correct Answer!");
+                playerInfo.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
+
+                // ToDo QWindow disappears and message "Correct!" appears for X seconds.
+
+            }
+            else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
+            {
+                Debug.Log("Incorrect Answer!");
+
+                // ToDo QWindow disappears and message "Incorrect!" appears for X seconds.
+            }
+
+            // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
+        }
     }
 }
