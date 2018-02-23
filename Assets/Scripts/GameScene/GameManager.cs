@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Monopoly.Lobby_v2;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
@@ -9,7 +10,13 @@ public class GameManager : MonoBehaviour
     private int answeredQuestionsCount;
     private bool timerActive;
     private bool allAnswered;
-    private bool answered;
+
+    [HideInInspector]
+    public bool answered;
+
+    private Color32 colorProcess = new Color32(225, 216, 98, 255);
+    private Color32 colorSuccess = new Color32(98, 225, 114, 255);
+    private Color32 colorError = new Color32(225, 98, 98, 255);
 
     [SerializeField]
     private PlayerInfo playerInfo;
@@ -24,6 +31,9 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private Text questionText;
+
+    [SerializeField]
+    private Text questionResultText;
 
     [SerializeField]
     private GameObject[] answers_GOs;
@@ -61,6 +71,7 @@ public class GameManager : MonoBehaviour
     {
         ClearWindow();
 
+        // If there's still questions
         if (questionNumber < QuestionsList.questionsList.Count)
         {
             FillWindow();
@@ -68,12 +79,13 @@ public class GameManager : MonoBehaviour
 
             Debug.Log("Question: " + (answeredQuestionsCount + 1) +
                       ". ScoreValue: " + QuestionsList.questionsList[questionNumber].scoreValue +
-                      ". Right answer is: " + QuestionsList.questionsList[questionNumber].rightAnswerNumber +
+                      ". Right answerResult is: " + QuestionsList.questionsList[questionNumber].rightAnswerNumber +
                       ". Duration: " + QuestionsList.questionsList[questionNumber].duration);
 
             timerActive = true;
             StartCoroutine(StartTimer(QuestionsList.questionsList[questionNumber].duration));
         }
+        // If questions are ended
         else
         {
             questionWindow.SetActive(false);
@@ -126,31 +138,51 @@ public class GameManager : MonoBehaviour
         questionText.text = QuestionsList.questionsList[answeredQuestionsCount].questionText;
         timerText.text = "0";
 
-        // ToDo Answers
+        // ToDo Answers from QList
     }
 
     public void CheckAnswerClick(GameObject clickedAnswer)
     {
         // Badass logic
-
         for (int i = 0; i < answers_GOs.Length; i++)
         {
             if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
             {
                 Debug.Log("Correct Answer!");
                 playerInfo.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
-
-                // ToDo QWindow disappears and message "Correct!" appears for X seconds.
-
+                StartCoroutine(MessageResult(true));
             }
             else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
             {
                 Debug.Log("Incorrect Answer!");
-
-                // ToDo QWindow disappears and message "Incorrect!" appears for X seconds.
+                StartCoroutine(MessageResult(false));
             }
 
             // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
         }
+    }
+
+    private IEnumerator MessageResult(bool answerResult)
+    {
+        const float delay = 3f;
+
+        answered = true;
+        questionWindow.SetActive(false);
+
+        if (answerResult == true)
+        {
+            questionResultText.color = colorSuccess;
+            questionResultText.text = "Correct!";
+        }
+        else
+        {
+            questionResultText.color = colorError;
+            questionResultText.text = "Wrong!";
+        }
+
+        questionResultText.gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(delay);
+        questionResultText.gameObject.SetActive(false);
     }
 }
