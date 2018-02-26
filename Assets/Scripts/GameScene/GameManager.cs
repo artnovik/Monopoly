@@ -18,8 +18,13 @@ public class GameManager : MonoBehaviour
     private Color32 colorSuccess = new Color32(98, 225, 114, 255);
     private Color32 colorError = new Color32(225, 98, 98, 255);
 
+    public PlayerInfo playerInfo;
+
     [SerializeField]
-    private PlayerInfo playerInfo;
+    private Transform playerFigureTransform;
+
+    [SerializeField]
+    private Transform[] waypointsTransforms;
 
     [Header("Question Window")]
 
@@ -49,7 +54,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("GameManager started.");
-
+        playerInfo.Refresh();
         StartGame();
     }
 
@@ -103,7 +108,6 @@ public class GameManager : MonoBehaviour
             // Question End
             if (timerTime < duration /*|| !allAnswered || !answered*/)
             {
-
                 yield return new WaitForSeconds(1);
                 timerTime++;
                 timerText.text = timerTime.ToString();
@@ -114,7 +118,9 @@ public class GameManager : MonoBehaviour
                 timerActive = false;
                 yield return new WaitForSeconds(1);
                 questionWindow.SetActive(false);
-                // MoveFigures();
+
+                // MoveFigures
+                MoveFigures(playerFigureTransform, playerInfo.GetPlayerScore());
                 Debug.Log("Question fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
@@ -160,6 +166,45 @@ public class GameManager : MonoBehaviour
 
             // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
         }
+    }
+
+    // ToDO Handle if 0
+
+    private void MoveFigures(Transform figureTransform, uint pointsGained)
+    {
+        //Debug.Log("Step: " + (pointsGained));
+        Vector3 target = new Vector3(waypointsTransforms[pointsGained - 1].position.x, waypointsTransforms[pointsGained - 1].position.y, waypointsTransforms[pointsGained - 1].position.z);
+        StartCoroutine(Movement(figureTransform, target));
+    }
+
+    private IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
+    {
+        // Will need to perform some of this process and yield until next frames
+        const float closeEnough = 0.05f;
+        float distance = (figureTransform.position - targetTransform).magnitude;
+
+        // GC will trigger unless we define this ahead of time
+        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+
+        // Continue until we're there
+        while (distance >= closeEnough)
+        {
+            // Confirm that it's moving
+            Debug.Log("Executing Movement");
+
+            // Move a bit then  wait until next  frame
+            figureTransform.position = Vector3.Slerp(figureTransform.position, targetTransform, 0.01f);
+            yield return wait;
+
+            // Check if we should repeat
+            distance = (figureTransform.position - targetTransform).magnitude;
+        }
+
+        // Complete the motion to prevent negligible sliding
+        figureTransform.position = targetTransform;
+
+        // Confirm  it's ended
+        Debug.Log("Movement Complete");
     }
 
     private IEnumerator MessageResult(bool answerResult)

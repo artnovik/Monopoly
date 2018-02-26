@@ -7,16 +7,6 @@ public class PlayerInfo : NetworkBehaviour
 
     private uint playerScore;
 
-    private void Start()
-    {
-
-    }
-
-    private void Update()
-    {
-
-    }
-
     /// <summary>
     /// Setting Player Name
     /// </summary>
@@ -35,5 +25,16 @@ public class PlayerInfo : NetworkBehaviour
     {
         playerScore += gainedPointsValue;
         Debug.Log(playerName + " gains: " + gainedPointsValue + " points. Total count: " + playerScore);
+    }
+
+    public uint GetPlayerScore()
+    {
+        return playerScore;
+    }
+
+    public void Refresh()
+    {
+        playerName = "Player " + PlayerPrefs.GetString("PlayerName");
+        playerScore = 0;
     }
 }
