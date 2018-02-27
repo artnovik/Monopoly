@@ -168,13 +168,14 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // ToDO Handle if 0
-
-    private void MoveFigures(Transform figureTransform, uint pointsGained)
+    private void MoveFigures(Transform figureTransform, uint playerScore)
     {
-        //Debug.Log("Step: " + (pointsGained));
-        Vector3 target = new Vector3(waypointsTransforms[pointsGained - 1].position.x, waypointsTransforms[pointsGained - 1].position.y, waypointsTransforms[pointsGained - 1].position.z);
-        StartCoroutine(Movement(figureTransform, target));
+        //Debug.Log("Step: " + (playerScore));
+        if (playerScore > 0)
+        {
+            Vector3 target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
+            StartCoroutine(Movement(figureTransform, target));
+        }
     }
 
     private IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
