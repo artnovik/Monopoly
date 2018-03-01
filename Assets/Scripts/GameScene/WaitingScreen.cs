@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
-using Monopoly.Lobby_v2;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class WaitingScreen : NetworkBehaviour
@@ -10,7 +9,10 @@ public class WaitingScreen : NetworkBehaviour
     [SerializeField]
     private GameObject GameManagerGo;
 
+    [SerializeField] private GameObject fpsTextGO;
+
     [SerializeField] private GameObject waitingScreenUI_GO;
+    [SerializeField] private GameObject startBoardUI_GO;
     [SerializeField] private GameObject readyText_GO;
 
     [SerializeField]
@@ -19,11 +21,18 @@ public class WaitingScreen : NetworkBehaviour
     // Use this for initialization
     private void Start()
     {
+        //Show FPS only on Android
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            fpsTextGO.SetActive(true);
+        }
+
         waitingScreenUI_GO.SetActive(true);
         GameManagerGo.SetActive(false);
+        startBoardUI_GO.SetActive(false);
 
         // ToDo Move this to "When all joined"
-        StartCoroutine(StartGM());
+        ShowStartBoard();
 
         //if (!isLocalPlayer)
         //{
@@ -48,14 +57,30 @@ public class WaitingScreen : NetworkBehaviour
         }
     }*/
 
+    private void ShowStartBoard()
+    {
+        startBoardUI_GO.SetActive(true);
+    }
+
+    public void StartGame()
+    {
+        startBoardUI_GO.SetActive(false);
+        readyText_GO.SetActive(true);
+
+        StartCoroutine(StartGM());
+    }
+
     // ToDo: Start when all are joined
     private IEnumerator StartGM()
     {
-        const float delay = 5f;
+        int timer = 5;
 
-        readyText_GO.SetActive(true);
-
-        yield return new WaitForSeconds(delay);
+        while (timer > 0)
+        {
+            readyText_GO.GetComponent<Text>().text = "Game starts in: " + timer;
+            yield return new WaitForSeconds(1);
+            --timer;
+        }
 
         // Gameplay start point. Disabling itself - don't need anymore
         waitingScreenUI_GO.SetActive(false);
@@ -64,7 +89,7 @@ public class WaitingScreen : NetworkBehaviour
     }
 
 
-    // ToDo Networking functionality [3]. Initialize Player Names into UI
+    // ToDo Networking functionality [3]. Put Player Names into UI
     //[ClientRpc]
     private void InitPlayerNames()
     {

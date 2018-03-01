@@ -1,8 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
-using Monopoly.Lobby_v2;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -30,12 +27,6 @@ public class GameManager : MonoBehaviour
 
     [SerializeField]
     private GameObject questionWindow;
-
-    [SerializeField]
-    private Text questionNumberText;
-
-    [SerializeField]
-    private Text questionText;
 
     [SerializeField]
     private Text questionResultText;
@@ -133,15 +124,11 @@ public class GameManager : MonoBehaviour
     private void ClearWindow()
     {
         timerText.text = string.Empty;
-        questionText.text = string.Empty;
-        questionNumberText.text = string.Empty;
         timerFillImage.fillAmount = 0f;
     }
 
     private void FillWindow()
     {
-        questionNumberText.text = (answeredQuestionsCount + 1).ToString();
-        questionText.text = QuestionsList.questionsList[answeredQuestionsCount].questionText;
         timerText.text = "0";
 
         // ToDo Answers from QList
