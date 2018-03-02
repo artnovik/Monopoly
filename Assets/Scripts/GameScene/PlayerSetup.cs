@@ -7,7 +7,7 @@ public class PlayerSetup : NetworkBehaviour
     private Behaviour[] componentsToDisable;
 
     [SerializeField]
-    private PlayerInfo playerInfo;
+    private PlayerData _playerData;
 
     private string _ID;
 
@@ -32,9 +32,9 @@ public class PlayerSetup : NetworkBehaviour
     private void RegisterPlayer()
     {
         _ID = "Player " + PlayerPrefs.GetString("PlayerName");
-        if (playerInfo != null)
+        if (_playerData != null)
         {
-            playerInfo.SetPlayerName(_ID);
+            _playerData.SetPlayerName(_ID);
         }
 
     }

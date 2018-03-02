@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     private Color32 colorSuccess = new Color32(98, 225, 114, 255);
     private Color32 colorError = new Color32(225, 98, 98, 255);
 
-    public PlayerInfo playerInfo;
+    public PlayerData playerData;
 
     [SerializeField]
     private Transform playerFigureTransform;
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         Debug.Log("GameManager started.");
-        playerInfo.Refresh();
+        playerData.Refresh();
         StartGame();
     }
 
@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
                 questionWindow.SetActive(false);
 
                 // MoveFigures
-                MoveFigures(playerFigureTransform, playerInfo.GetPlayerScore());
+                MoveFigures(playerFigureTransform, playerData.GetPlayerScore());
                 Debug.Log("Question fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
             if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
             {
                 Debug.Log("Correct Answer!");
-                playerInfo.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
+                playerData.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
                 StartCoroutine(MessageResult(true));
             }
             else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
