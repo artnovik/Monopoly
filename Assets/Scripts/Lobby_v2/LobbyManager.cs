@@ -134,11 +134,9 @@ namespace Monopoly.Lobby_v2
                 //  To make sure we have only one Connect button
                 if (GameObject.FindGameObjectWithTag("Connect") == null)
                 {
-                    GameObject _buttonConnectGO = Instantiate(buttonConnect);
-                    _buttonConnectGO.transform.SetParent(buttonConnectParent);
-                    _buttonConnectGO.transform.localPosition = new Vector3(buttonConnect.transform.position.x, buttonConnect.transform.position.y, buttonConnect.transform.position.z);
-                    _buttonConnectGO.transform.localScale = Vector3.one;
+                    GameObject _buttonConnectGO = Instantiate(buttonConnect, buttonConnectParent);
                     Connect _buttonConnect = _buttonConnectGO.GetComponent<Connect>();
+
                     if (_buttonConnect != null)
                     {
                         _buttonConnect.Setup(match, JoinRoom);

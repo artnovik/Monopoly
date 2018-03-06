@@ -312,7 +312,7 @@ namespace UnityEngine.PostProcessing
 
         void OnDisable()
         {
-            // Clear command buffers
+            // Refresh command buffers
             foreach (var cb in m_CommandBuffers.Values)
             {
                 m_Camera.RemoveCommandBuffer(cb.Key, cb.Value);
@@ -321,7 +321,7 @@ namespace UnityEngine.PostProcessing
 
             m_CommandBuffers.Clear();
 
-            // Clear components
+            // Refresh components
             if (profile != null)
                 DisableComponents();
 

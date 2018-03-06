@@ -50,7 +50,6 @@ public class QuestionVideo : QuestionClass
     }
 }
 
-// ToDo Array stuff
 public class QuestionsList
 {
     public static QuestionText question1 = new QuestionText(5, "Question_One", 2, 5);
