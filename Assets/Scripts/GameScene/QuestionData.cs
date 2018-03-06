@@ -30,9 +30,20 @@ public class QuestionData : MonoBehaviour
         gameObject.GetComponent<QuestionData>().questionWindows[++windowNumber].SetActive(true);
     }
 
-    public void FinishAnswer()
+    public void FinishAnswerIfTimerRunsOut(int questionNumber)
     {
-        Debug.Log("Finish");
+        switch (questionNumber)
+        {
+            case 1:
+                gameObject.GetComponent<Question1>().ButtonConfirmAnswerFinishIfTimer();
+                break;
+            case 2:
+                gameObject.GetComponent<Question3>().ButtonConfirmAnswerFinishIfTimer();
+                break;
+            default:
+                Debug.Log("Check smthn");
+                break;
+        }
     }
 
     public void Refresh()

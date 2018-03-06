@@ -81,6 +81,12 @@ public class Question1 : MonoBehaviour
         question1Data.gameManager.answered = true;
     }
 
+    public void ButtonConfirmAnswerFinishIfTimer()
+    {
+        question1Data.gameManager.playerData.AddPlayerScore(scoreValue);
+        question1Data.gameManager.answered = true;
+    }
+
     private void Colorizing(Text answerNumText)
     {
         switch (answerNumText.text)

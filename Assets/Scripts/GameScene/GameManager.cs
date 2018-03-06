@@ -33,6 +33,9 @@ public class GameManager : MonoBehaviour
     private GameObject timerObject;
 
     [SerializeField]
+    private GameObject buttonExit;
+
+    [SerializeField]
     private Text resultText;
 
     [SerializeField]
@@ -52,6 +55,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager started.");
         questionWindow.SetActive(false);
+        buttonExit.SetActive(false);
         foreach (GameObject question in questionsGO)
         {
             question.SetActive(false);
@@ -96,7 +100,8 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            resultText.text = "Final! (Ending will be here)";
+            ToastMessage("Ending will be here, after all questions\nBut you see how mechanics works", true);
+            buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
     }
@@ -129,17 +134,25 @@ public class GameManager : MonoBehaviour
             else
             {
                 timerActive = false;
+
                 yield return new WaitForSeconds(1);
 
                 questionsGO[answeredQuestionsCount].SetActive(false);
                 timerObject.SetActive(false);
                 questionWindow.SetActive(false);
 
+                if (!answered)
+                {
+                    currentQuestionData.FinishAnswerIfTimerRunsOut(answeredQuestionsCount + 1);
+                }
+
                 // MoveFigures
                 MoveFigures(playerFigureTransform, playerData.GetPlayerScore());
                 Debug.Log("Question fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
+                ToastMessage(string.Empty, false);
+
                 QuestionPopUp();
                 yield break;
             }
@@ -175,6 +188,8 @@ public class GameManager : MonoBehaviour
 
     private void MoveFigures(Transform figureTransform, uint playerScore)
     {
+        ToastMessage("Movement (Regarding to gained score)", true);
+
         //Debug.Log("Step: " + (playerScore));
         if (playerScore > 0)
         {
@@ -213,6 +228,12 @@ public class GameManager : MonoBehaviour
         Debug.Log("Movement Complete");
     }
 
+    private void ToastMessage(string text, bool activeStatus)
+    {
+        resultText.text = text;
+        resultText.gameObject.SetActive(activeStatus);
+    }
+
     private IEnumerator MessageResult(bool answerResult)
     {
         const float delay = 3f;
@@ -223,17 +244,20 @@ public class GameManager : MonoBehaviour
         if (answerResult == true)
         {
             resultText.color = colorSuccess;
-            resultText.text = "Correct!";
+            ToastMessage("Correct!", true);
         }
         else
         {
             resultText.color = colorError;
-            resultText.text = "Wrong!";
+            ToastMessage("Wrong!", true);
         }
 
-        resultText.gameObject.SetActive(true);
-
         yield return new WaitForSeconds(delay);
-        resultText.gameObject.SetActive(false);
+        ToastMessage(string.Empty, false);
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
     }
 }
