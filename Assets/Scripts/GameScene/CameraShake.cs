@@ -10,8 +10,6 @@ public class CameraShake : MonoBehaviour
     [SerializeField]
     private float shakeMagnitude;
 
-    private Vector3 velocity = Vector3.zero;
-
     private void Start()
     {
         StartCoroutine(Shake(shakeDuration, shakeMagnitude));

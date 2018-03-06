@@ -5,22 +5,24 @@ using UnityEngine;
 
 public class QuestionData : MonoBehaviour
 {
-    public int answerScoreValue;
-    public int answerCount;
+    public GameManager gameManager;
 
-    public int duration = 60;
+    public uint answerScoreValue;
+    public uint answerCount;
+
+    public uint duration = 60;
 
     [HideInInspector]
-    public int totalScoreValue;
+    public uint totalScoreValue;
 
-    public int number;
+    public uint number;
 
     [SerializeField]
     private GameObject[] questionWindows;
 
     private int windowNumber = 0;
 
-    private int scoreToAdd;
+    private uint scoreToAdd;
 
     public void NextWindow()
     {

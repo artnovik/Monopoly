@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager started.");
         questionWindow.SetActive(false);
-        foreach (var question in questionsGO)
+        foreach (GameObject question in questionsGO)
         {
             question.SetActive(false);
         }
@@ -106,10 +106,11 @@ public class GameManager : MonoBehaviour
         StartCoroutine(StartTimer(currentQuestionData.duration));
     }
 
-    private IEnumerator StartTimer(int duration)
+    private IEnumerator StartTimer(uint duration)
     {
         ResetTimer();
         timerObject.SetActive(true);
+        answered = false;
 
         int timerTime = 0;
         timerActive = true;
@@ -118,7 +119,7 @@ public class GameManager : MonoBehaviour
 
         while (timerActive)
         {
-            if (timerTime < duration /*|| !allAnswered || !answered*/)
+            if (timerTime < duration && !answered /*|| !allAnswered*/)
             {
                 yield return new WaitForSeconds(1);
                 timerTime++;
