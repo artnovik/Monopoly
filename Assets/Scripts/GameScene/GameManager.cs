@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -29,10 +30,13 @@ public class GameManager : MonoBehaviour
     private GameObject questionWindow;
 
     [SerializeField]
-    private Text questionResultText;
+    private GameObject timerObject;
 
     [SerializeField]
-    private GameObject[] answers_GOs;
+    private Text resultText;
+
+    [SerializeField]
+    private GameObject[] questionsGO;
 
     [Header("Timer")]
 
@@ -42,9 +46,17 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Image timerFillImage;
 
+    private QuestionData currentQuestionData;
+
     private void Start()
     {
         Debug.Log("GameManager started.");
+        questionWindow.SetActive(false);
+        foreach (var question in questionsGO)
+        {
+            question.SetActive(false);
+        }
+
         playerData.Refresh();
         StartGame();
     }
@@ -60,43 +72,52 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
-        QuestionPopUp(answeredQuestionsCount);
+        QuestionPopUp();
     }
 
-    private void QuestionPopUp(int questionNumber)
+    private void QuestionPopUp()
     {
-        ClearWindow();
-
-        // If there's still questions
-        if (questionNumber < QuestionsList.questionsList.Count)
+        // If there's still questions in list
+        if (answeredQuestionsCount < questionsGO.Length)
         {
-            FillWindow();
+            currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
+            currentQuestionData.Refresh();
+
             questionWindow.SetActive(true);
+            questionsGO[answeredQuestionsCount].SetActive(true);
 
-            Debug.Log("Question: " + (answeredQuestionsCount + 1) +
-                      ". ScoreValue: " + QuestionsList.questionsList[questionNumber].scoreValue +
-                      ". Right answerResult is: " + QuestionsList.questionsList[questionNumber].rightAnswerNumber +
-                      ". Duration: " + QuestionsList.questionsList[questionNumber].duration);
+            Debug.Log("Question: " + (currentQuestionData.number) +
+                      ". ScoreValue: " + currentQuestionData.totalScoreValue +
+                      ". Duration: " + currentQuestionData.duration);
 
-            timerActive = true;
-            StartCoroutine(StartTimer(QuestionsList.questionsList[questionNumber].duration));
+            Invoke("AnswerStart", 5f);
         }
         // If questions are ended
         else
         {
             questionWindow.SetActive(false);
+            resultText.text = "Final! (Ending will be here)";
             Debug.Log("Final!");
         }
     }
 
+    private void AnswerStart()
+    {
+        StartCoroutine(StartTimer(currentQuestionData.duration));
+    }
+
     private IEnumerator StartTimer(int duration)
     {
+        ResetTimer();
+        timerObject.SetActive(true);
+
         int timerTime = 0;
         timerActive = true;
 
+        currentQuestionData.NextWindow();
+
         while (timerActive)
         {
-            // Question End
             if (timerTime < duration /*|| !allAnswered || !answered*/)
             {
                 yield return new WaitForSeconds(1);
@@ -108,6 +129,9 @@ public class GameManager : MonoBehaviour
             {
                 timerActive = false;
                 yield return new WaitForSeconds(1);
+
+                questionsGO[answeredQuestionsCount].SetActive(false);
+                timerObject.SetActive(false);
                 questionWindow.SetActive(false);
 
                 // MoveFigures
@@ -115,44 +139,37 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Question fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
-                QuestionPopUp(answeredQuestionsCount);
+                QuestionPopUp();
                 yield break;
             }
         }
     }
 
-    private void ClearWindow()
-    {
-        timerText.text = string.Empty;
-        timerFillImage.fillAmount = 0f;
-    }
-
-    private void FillWindow()
+    private void ResetTimer()
     {
         timerText.text = "0";
-
-        // ToDo Answers from QList
+        timerFillImage.fillAmount = 0f;
     }
 
     public void CheckAnswerClick(GameObject clickedAnswer)
     {
         // Badass logic
-        for (int i = 0; i < answers_GOs.Length; i++)
-        {
-            if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
-            {
-                Debug.Log("Correct Answer!");
-                playerData.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
-                StartCoroutine(MessageResult(true));
-            }
-            else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
-            {
-                Debug.Log("Incorrect Answer!");
-                StartCoroutine(MessageResult(false));
-            }
+        //for (int i = 0; i < answers_GOs.Length; i++)
+        //{
+        //    if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
+        //    {
+        //        Debug.Log("Correct Answer!");
+        //        playerData.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
+        //        StartCoroutine(MessageResult(true));
+        //    }
+        //    else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
+        //    {
+        //        Debug.Log("Incorrect Answer!");
+        //        StartCoroutine(MessageResult(false));
+        //    }
 
-            // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
-        }
+        //    // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
+        //}
     }
 
     private void MoveFigures(Transform figureTransform, uint playerScore)
@@ -204,18 +221,18 @@ public class GameManager : MonoBehaviour
 
         if (answerResult == true)
         {
-            questionResultText.color = colorSuccess;
-            questionResultText.text = "Correct!";
+            resultText.color = colorSuccess;
+            resultText.text = "Correct!";
         }
         else
         {
-            questionResultText.color = colorError;
-            questionResultText.text = "Wrong!";
+            resultText.color = colorError;
+            resultText.text = "Wrong!";
         }
 
-        questionResultText.gameObject.SetActive(true);
+        resultText.gameObject.SetActive(true);
 
         yield return new WaitForSeconds(delay);
-        questionResultText.gameObject.SetActive(false);
+        resultText.gameObject.SetActive(false);
     }
 }

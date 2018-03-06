@@ -63,7 +63,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1171188700425568
 GameObject:
   m_ObjectHideFlags: 1
@@ -108,6 +108,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224880801744378298}
+  - component: {fileID: 114365697389836644}
   m_Layer: 5
   m_Name: Question1
   m_TagString: Untagged
@@ -257,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &114007126656515774
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -597,6 +598,25 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!114 &114365697389836644
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1327903900901570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b66e56de4e001c448e5704c59fb5b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  answerScoreValue: 1
+  answerCount: 5
+  duration: 7
+  totalScoreValue: 5
+  number: 1
+  questionWindows:
+  - {fileID: 1915280048588476}
+  - {fileID: 1075374324657626}
 --- !u!114 &114406722524846264
 MonoBehaviour:
   m_ObjectHideFlags: 1

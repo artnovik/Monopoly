@@ -64,6 +64,7 @@ public class WaitingScreen : NetworkBehaviour
 
     public void StartGame()
     {
+        // ToDo: When all clicked
         startBoardUI_GO.SetActive(false);
         readyText_GO.SetActive(true);
 

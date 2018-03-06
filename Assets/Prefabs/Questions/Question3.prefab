@@ -143,6 +143,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224357197068635204}
+  - component: {fileID: 114627646519305394}
   m_Layer: 5
   m_Name: Question3
   m_TagString: Untagged
@@ -166,7 +167,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &1674984652716516
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,7 +184,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &114001435228668366
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -477,6 +478,25 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114627646519305394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1569750283481058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b66e56de4e001c448e5704c59fb5b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  answerScoreValue: 1
+  answerCount: 5
+  duration: 45
+  totalScoreValue: 5
+  number: 3
+  questionWindows:
+  - {fileID: 1674984652716516}
+  - {fileID: 1669162674768642}
 --- !u!114 &114630425910190068
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -622,12 +642,12 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: 
+      - m_Target: {fileID: 114627646519305394}
+        m_MethodName: FinishAnswer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
