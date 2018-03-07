@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Question1 : MonoBehaviour
+public class Question1 : QuestionData
 {
-    [SerializeField]
-    private QuestionData question1Data;
 
     private int clickNum;
     private string firstClickNumber;
@@ -61,8 +59,8 @@ public class Question1 : MonoBehaviour
             secondClickNumber = buttonClicked.name.Replace("Answer", string.Empty);
             if (firstClickNumber == secondClickNumber)
             {
-                scoreValue += question1Data.answerScoreValue;
-                Debug.Log("Right! Player will gain + " + question1Data.answerScoreValue + ". Total be: " + scoreValue);
+                scoreValue += scoreMaxValue / 5;
+                Debug.Log("Right! Player will gain + " + scoreMaxValue / 5 + ". Total be: " + scoreValue);
             }
             else
             {
@@ -74,17 +72,15 @@ public class Question1 : MonoBehaviour
         }
     }
 
-    public void ButtonConfirmAnswer(GameObject buttonConfirm)
+    public void ButtonConfirmAnswer()
     {
-        buttonConfirm.GetComponent<Button>().interactable = false;
-        question1Data.gameManager.playerData.AddPlayerScore(scoreValue);
-        question1Data.gameManager.answered = true;
-    }
+        gameManager.playerData.AddPlayerScore(scoreValue);
+        gameManager.answered = true;
 
-    public void ButtonConfirmAnswerFinishIfTimer()
-    {
-        question1Data.gameManager.playerData.AddPlayerScore(scoreValue);
-        question1Data.gameManager.answered = true;
+        foreach (var button in buttonsConfirmAnswer)
+        {
+            button.GetComponent<Button>().interactable = false;
+        }
     }
 
     private void Colorizing(Text answerNumText)
@@ -109,7 +105,6 @@ public class Question1 : MonoBehaviour
             default:
                 Debug.Log("Check smthn");
                 break;
-
         }
     }
 }

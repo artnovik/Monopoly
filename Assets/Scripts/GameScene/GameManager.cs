@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -85,14 +86,13 @@ public class GameManager : MonoBehaviour
         if (answeredQuestionsCount < questionsGO.Length)
         {
             currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
-            currentQuestionData.Refresh();
 
             questionWindow.SetActive(true);
             questionsGO[answeredQuestionsCount].SetActive(true);
 
             Debug.Log("Question: " + (currentQuestionData.number) +
-                      ". ScoreValue: " + currentQuestionData.totalScoreValue +
-                      ". Duration: " + currentQuestionData.duration);
+                      ". MaxScore: " + currentQuestionData.scoreMaxValue +
+                      ". Duration: " + currentQuestionData.duration + " s");
 
             Invoke("AnswerStart", 5f);
         }
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            ToastMessage("Ending will be here, after all questions\nBut you see how mechanics works", true);
+            ToastMessage(true, "Ending will be here, after all questions\nBut you see how mechanics works");
             buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
@@ -141,9 +141,10 @@ public class GameManager : MonoBehaviour
                 timerObject.SetActive(false);
                 questionWindow.SetActive(false);
 
+                // If Answer Button wasn't pressed
                 if (!answered)
                 {
-                    currentQuestionData.FinishAnswerIfTimerRunsOut(answeredQuestionsCount + 1);
+                    currentQuestionData.FinishAnswerIfTimerRunsOut(currentQuestionData.number);
                 }
 
                 // MoveFigures
@@ -151,7 +152,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Question fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
-                ToastMessage(string.Empty, false);
+                ToastMessage(false);
 
                 QuestionPopUp();
                 yield break;
@@ -159,59 +160,33 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void ResetTimer()
-    {
-        timerText.text = "0";
-        timerFillImage.fillAmount = 0f;
-    }
-
-    public void CheckAnswerClick(GameObject clickedAnswer)
-    {
-        // Badass logic
-        //for (int i = 0; i < answers_GOs.Length; i++)
-        //{
-        //    if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
-        //    {
-        //        Debug.Log("Correct Answer!");
-        //        playerData.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreValue);
-        //        StartCoroutine(MessageResult(true));
-        //    }
-        //    else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
-        //    {
-        //        Debug.Log("Incorrect Answer!");
-        //        StartCoroutine(MessageResult(false));
-        //    }
-
-        //    // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
-        //}
-    }
-
     private void MoveFigures(Transform figureTransform, uint playerScore)
     {
-        ToastMessage("Movement (Regarding to gained score)", true);
+        ToastMessage(true, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
 
-        //Debug.Log("Step: " + (playerScore));
         if (playerScore > 0)
         {
-            Vector3 target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
+            var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
             StartCoroutine(Movement(figureTransform, target));
         }
     }
 
-    private IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
+    private static IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
     {
         // Will need to perform some of this process and yield until next frames
         const float closeEnough = 0.05f;
         float distance = (figureTransform.position - targetTransform).magnitude;
 
         // GC will trigger unless we define this ahead of time
-        WaitForEndOfFrame wait = new WaitForEndOfFrame();
+        var wait = new WaitForEndOfFrame();
+
+        Debug.Log("Score is > 0. We are moving.");
 
         // Continue until we're there
         while (distance >= closeEnough)
         {
             // Confirm that it's moving
-            Debug.Log("Executing Movement");
+            //Debug.Log("Executing Movement");
 
             // Move a bit then  wait until next  frame
             figureTransform.position = Vector3.Slerp(figureTransform.position, targetTransform, 0.01f);
@@ -228,33 +203,71 @@ public class GameManager : MonoBehaviour
         Debug.Log("Movement Complete");
     }
 
-    private void ToastMessage(string text, bool activeStatus)
+    private void ToastMessage(bool activeStatus, string text)
     {
         resultText.text = text;
         resultText.gameObject.SetActive(activeStatus);
     }
 
-    private IEnumerator MessageResult(bool answerResult)
+    private void ToastMessage(bool activeStatus)
     {
-        const float delay = 3f;
-
-        answered = true;
-        questionWindow.SetActive(false);
-
-        if (answerResult == true)
+        if (!activeStatus)
         {
-            resultText.color = colorSuccess;
-            ToastMessage("Correct!", true);
-        }
-        else
-        {
-            resultText.color = colorError;
-            ToastMessage("Wrong!", true);
+            resultText.text = string.Empty;
         }
 
-        yield return new WaitForSeconds(delay);
-        ToastMessage(string.Empty, false);
+        resultText.gameObject.SetActive(activeStatus);
     }
+
+    private void ResetTimer()
+    {
+        timerText.text = "0";
+        timerFillImage.fillAmount = 0f;
+    }
+
+    // MessageResult/CheckAnswerClick
+    //private IEnumerator MessageResult(bool answerResultIsTrue)
+    //{
+    //    const float delay = 3f;
+
+    //    answered = true;
+    //    questionWindow.SetActive(false);
+
+    //    if (answerResultIsTrue)
+    //    {
+    //        resultText.color = colorSuccess;
+    //        ToastMessage(true, "Correct!");
+    //    }
+    //    else
+    //    {
+    //        resultText.color = colorError;
+    //        ToastMessage(true, "Wrong!");
+    //    }
+
+    //    yield return new WaitForSeconds(delay);
+    //    ToastMessage(false);
+    //}
+
+    //public void CheckAnswerClick(GameObject clickedAnswer)
+    //{
+    //    // Badass logic
+    //    for (int i = 0; i < answers_GOs.Length; i++)
+    //    {
+    //        if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
+    //        {
+    //            Debug.Log("Correct Answer!");
+    //            playerData.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreMaxValue);
+    //            StartCoroutine(MessageResult(true));
+    //        }
+    //        else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
+    //        {
+    //            Debug.Log("Incorrect Answer!");
+    //            StartCoroutine(MessageResult(false));
+    //        }
+
+    //        // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
+    //    }
+    //}
 
     public void ExitGame()
     {

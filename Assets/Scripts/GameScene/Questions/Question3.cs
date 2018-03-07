@@ -4,16 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Question3 : MonoBehaviour
+public class Question3 : QuestionData
 {
     [SerializeField]
     private Image answerImage;
 
     [SerializeField]
     private GameObject answerObject;
-
-    [SerializeField]
-    private QuestionData question3Data;
 
     private bool isAnsweringStarted;
     private bool rightAnswer;
@@ -22,13 +19,14 @@ public class Question3 : MonoBehaviour
 
     private uint scoreValue;
 
-    private int rightAnswerNumber = 4;
+    [SerializeField]
+    private GameObject rightAnswerButton;
 
     private void Update()
     {
         if (!isAnsweringStarted && answerObject.activeSelf)
         {
-            StartCoroutine(ImageShowing(question3Data.duration));
+            StartCoroutine(ImageShowing(duration));
             isAnsweringStarted = true;
         }
     }
@@ -54,32 +52,32 @@ public class Question3 : MonoBehaviour
 
             if (timeSinceStart < 10)
             {
-                scoreValue = question3Data.answerScoreValue;
+                scoreValue = scoreMaxValue;
                 Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 10 && timeSinceStart < 20)
             {
-                scoreValue = question3Data.answerScoreValue - 1;
+                scoreValue = scoreMaxValue - 1;
                 Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 20 && timeSinceStart < 30)
             {
-                scoreValue = question3Data.answerScoreValue - 2;
+                scoreValue = scoreMaxValue - 2;
                 Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 30 && timeSinceStart < 40)
             {
-                scoreValue = question3Data.answerScoreValue - 3;
+                scoreValue = scoreMaxValue - 3;
                 Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 40 && timeSinceStart < 50)
             {
-                scoreValue = question3Data.answerScoreValue - 4;
+                scoreValue = scoreMaxValue - 4;
                 Debug.Log(scoreValue.ToString());
             }
             else
             {
-                scoreValue = question3Data.answerScoreValue - question3Data.answerScoreValue + 1;
+                scoreValue = scoreMaxValue - scoreMaxValue + 1;
                 Debug.Log("Score is: " + scoreValue + " now!");
             }
         }
@@ -87,33 +85,23 @@ public class Question3 : MonoBehaviour
 
     public void ButtonAnswerSelect(GameObject buttonClicked)
     {
-        int clickedAnswerNumber = Int32.Parse(buttonClicked.name.Replace("Answer", string.Empty));
-        Debug.Log(clickedAnswerNumber.ToString());
+        rightAnswer = buttonClicked == rightAnswerButton;
 
-        rightAnswer = clickedAnswerNumber == rightAnswerNumber;
-
-        Debug.Log("This (" + clickedAnswerNumber + ") answer is " + rightAnswer);
+        Debug.Log("This (" + int.Parse(buttonClicked.name.Replace("Answer", string.Empty)) + ") answer is " + rightAnswer);
     }
 
-    public void ButtonConfirmAnswer(GameObject buttonConfirm)
-    {
-
-        if (rightAnswer)
-        {
-            question3Data.gameManager.playerData.AddPlayerScore(scoreValue);
-        }
-
-        buttonConfirm.GetComponent<Button>().interactable = false;
-        question3Data.gameManager.answered = true;
-    }
-
-    public void ButtonConfirmAnswerFinishIfTimer()
+    public void ButtonConfirmAnswer()
     {
         if (rightAnswer)
         {
-            question3Data.gameManager.playerData.AddPlayerScore(scoreValue);
+            gameManager.playerData.AddPlayerScore(scoreValue);
         }
 
-        question3Data.gameManager.answered = true;
+        foreach (var button in buttonsConfirmAnswer)
+        {
+            button.GetComponent<Button>().interactable = false;
+        }
+
+        gameManager.answered = true;
     }
 }
