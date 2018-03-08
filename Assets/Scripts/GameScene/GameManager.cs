@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            ScreenMessage(true, "Ending will be here, after all questions\nBut you see how mechanics works");
+            ScreenMessage(true, colorSuccess, "Ending will be here, after all questions\nBut you see how mechanics works");
             buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
@@ -162,10 +162,12 @@ public class GameManager : MonoBehaviour
 
     private void MoveFigures(Transform figureTransform, uint playerScore)
     {
-        ScreenMessage(true, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
+        ScreenMessage(true, colorError, "Stay on beginning\nCurrentScore: " + playerData.GetPlayerScore());
 
         if (playerScore > 0)
         {
+            ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
+
             var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
             StartCoroutine(Movement(figureTransform, target));
         }
@@ -247,9 +249,10 @@ public class GameManager : MonoBehaviour
     //    }
     //}
 
-    private void ScreenMessage(bool activeStatus, string text)
+    private void ScreenMessage(bool activeStatus, Color32 textColor, string text)
     {
         resultText.text = text;
+        resultText.color = textColor;
         resultText.gameObject.SetActive(activeStatus);
     }
 
@@ -258,6 +261,7 @@ public class GameManager : MonoBehaviour
         if (!activeStatus)
         {
             resultText.text = string.Empty;
+            resultText.color = Color.white;
         }
 
         resultText.gameObject.SetActive(activeStatus);
