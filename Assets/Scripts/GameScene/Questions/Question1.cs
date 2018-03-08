@@ -75,7 +75,7 @@ public class Question1 : QuestionData
     public void ButtonConfirmAnswer()
     {
         gameManager.playerData.AddPlayerScore(scoreValue);
-        gameManager.answered = true;
+        gameManager.answerDone = true;
 
         foreach (var button in buttonsConfirmAnswer)
         {

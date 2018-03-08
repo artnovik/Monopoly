@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     private bool allAnswered;
 
     [HideInInspector]
-    public bool answered;
+    public bool answerDone;
 
     private Color32 colorProcess = new Color32(225, 216, 98, 255);
     private Color32 colorSuccess = new Color32(98, 225, 114, 255);
@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            ToastMessage(true, "Ending will be here, after all questions\nBut you see how mechanics works");
+            ScreenMessage(true, "Ending will be here, after all questions\nBut you see how mechanics works");
             buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
@@ -115,7 +115,7 @@ public class GameManager : MonoBehaviour
     {
         ResetTimer();
         timerObject.SetActive(true);
-        answered = false;
+        answerDone = false;
 
         int timerTime = 0;
         timerActive = true;
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
 
         while (timerActive)
         {
-            if (timerTime < duration && !answered /*|| !allAnswered*/)
+            if (timerTime < duration && !answerDone /*|| !allAnswered*/)
             {
                 yield return new WaitForSeconds(1);
                 timerTime++;
@@ -142,7 +142,7 @@ public class GameManager : MonoBehaviour
                 questionWindow.SetActive(false);
 
                 // If Answer Button wasn't pressed
-                if (!answered)
+                if (!answerDone)
                 {
                     currentQuestionData.FinishAnswerIfTimerRunsOut(currentQuestionData.number);
                 }
@@ -152,7 +152,7 @@ public class GameManager : MonoBehaviour
                 Debug.Log("Question fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
-                ToastMessage(false);
+                ScreenMessage(false);
 
                 QuestionPopUp();
                 yield break;
@@ -162,7 +162,7 @@ public class GameManager : MonoBehaviour
 
     private void MoveFigures(Transform figureTransform, uint playerScore)
     {
-        ToastMessage(true, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
+        ScreenMessage(true, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
 
         if (playerScore > 0)
         {
@@ -203,13 +203,13 @@ public class GameManager : MonoBehaviour
         Debug.Log("Movement Complete");
     }
 
-    private void ToastMessage(bool activeStatus, string text)
+    private void ScreenMessage(bool activeStatus, string text)
     {
         resultText.text = text;
         resultText.gameObject.SetActive(activeStatus);
     }
 
-    private void ToastMessage(bool activeStatus)
+    private void ScreenMessage(bool activeStatus)
     {
         if (!activeStatus)
         {
@@ -230,22 +230,22 @@ public class GameManager : MonoBehaviour
     //{
     //    const float delay = 3f;
 
-    //    answered = true;
+    //    answerDone = true;
     //    questionWindow.SetActive(false);
 
     //    if (answerResultIsTrue)
     //    {
     //        resultText.color = colorSuccess;
-    //        ToastMessage(true, "Correct!");
+    //        ScreenMessage(true, "Correct!");
     //    }
     //    else
     //    {
     //        resultText.color = colorError;
-    //        ToastMessage(true, "Wrong!");
+    //        ScreenMessage(true, "Wrong!");
     //    }
 
     //    yield return new WaitForSeconds(delay);
-    //    ToastMessage(false);
+    //    ScreenMessage(false);
     //}
 
     //public void CheckAnswerClick(GameObject clickedAnswer)

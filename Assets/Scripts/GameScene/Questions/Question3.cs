@@ -102,6 +102,6 @@ public class Question3 : QuestionData
             button.GetComponent<Button>().interactable = false;
         }
 
-        gameManager.answered = true;
+        gameManager.answerDone = true;
     }
 }

@@ -41,7 +41,7 @@ public class Question4 : QuestionData
 
         buttonsConfirmAnswer[windowNumber].GetComponent<Button>().interactable = false;
 
-        gameManager.answered = true;
+        gameManager.answerDone = true;
     }
 
     public void ButtonSecondConfirmAnswer()
@@ -53,6 +53,6 @@ public class Question4 : QuestionData
         }
 
         buttonsConfirmAnswer[windowNumber].GetComponent<Button>().interactable = false;
-        gameManager.answered = true;
+        gameManager.answerDone = true;
     }
 }
