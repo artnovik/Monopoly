@@ -203,28 +203,6 @@ public class GameManager : MonoBehaviour
         Debug.Log("Movement Complete");
     }
 
-    private void ScreenMessage(bool activeStatus, string text)
-    {
-        resultText.text = text;
-        resultText.gameObject.SetActive(activeStatus);
-    }
-
-    private void ScreenMessage(bool activeStatus)
-    {
-        if (!activeStatus)
-        {
-            resultText.text = string.Empty;
-        }
-
-        resultText.gameObject.SetActive(activeStatus);
-    }
-
-    private void ResetTimer()
-    {
-        timerText.text = "0";
-        timerFillImage.fillAmount = 0f;
-    }
-
     // MessageResult/CheckAnswerClick
     //private IEnumerator MessageResult(bool answerResultIsTrue)
     //{
@@ -268,6 +246,28 @@ public class GameManager : MonoBehaviour
     //        // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
     //    }
     //}
+
+    private void ScreenMessage(bool activeStatus, string text)
+    {
+        resultText.text = text;
+        resultText.gameObject.SetActive(activeStatus);
+    }
+
+    private void ScreenMessage(bool activeStatus)
+    {
+        if (!activeStatus)
+        {
+            resultText.text = string.Empty;
+        }
+
+        resultText.gameObject.SetActive(activeStatus);
+    }
+
+    private void ResetTimer()
+    {
+        timerText.text = "0";
+        timerFillImage.fillAmount = 0f;
+    }
 
     public void ExitGame()
     {
