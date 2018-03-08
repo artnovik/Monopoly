@@ -103,5 +103,8 @@ public class Question3 : QuestionData
         }
 
         gameManager.answerDone = true;
+
+        gameObject.SetActive(false);
+        gameManager.ResetTimer(false);
     }
 }

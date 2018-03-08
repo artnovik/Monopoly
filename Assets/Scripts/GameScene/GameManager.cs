@@ -108,13 +108,12 @@ public class GameManager : MonoBehaviour
 
     private void AnswerStart()
     {
-        StartCoroutine(StartTimer(currentQuestionData.duration));
+        StartCoroutine(StartCountdown(currentQuestionData.duration));
     }
 
-    private IEnumerator StartTimer(uint duration)
+    private IEnumerator StartCountdown(uint duration)
     {
-        ResetTimer();
-        timerObject.SetActive(true);
+        ResetTimer(true);
         answerDone = false;
 
         int timerTime = 0;
@@ -137,8 +136,12 @@ public class GameManager : MonoBehaviour
 
                 yield return new WaitForSeconds(1);
 
-                questionsGO[answeredQuestionsCount].SetActive(false);
-                timerObject.SetActive(false);
+                //if (questionsGO[answeredQuestionsCount].activeSelf)
+                //{
+                //    questionsGO[answeredQuestionsCount].SetActive(false);
+                //}
+
+                ResetTimer(false);
                 questionWindow.SetActive(false);
 
                 // If Answer Button wasn't pressed
@@ -168,8 +171,16 @@ public class GameManager : MonoBehaviour
         {
             ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
 
-            var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
-            StartCoroutine(Movement(figureTransform, target));
+            if (playerScore > waypointsTransforms.Length)
+            {
+                var target = new Vector3(waypointsTransforms[waypointsTransforms.Length - 1].position.x, waypointsTransforms[waypointsTransforms.Length - 1].position.y, waypointsTransforms[waypointsTransforms.Length - 1].position.z);
+                StartCoroutine(Movement(figureTransform, target));
+            }
+            else
+            {
+                var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
+                StartCoroutine(Movement(figureTransform, target));
+            }
         }
     }
 
@@ -267,8 +278,9 @@ public class GameManager : MonoBehaviour
         resultText.gameObject.SetActive(activeStatus);
     }
 
-    private void ResetTimer()
+    public void ResetTimer(bool activeStatus)
     {
+        timerObject.SetActive(activeStatus);
         timerText.text = "0";
         timerFillImage.fillAmount = 0f;
     }

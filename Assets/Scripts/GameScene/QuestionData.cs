@@ -13,8 +13,7 @@ public class QuestionData : MonoBehaviour
 
     public uint number;
 
-    [SerializeField]
-    private GameObject[] questionWindows;
+    public GameObject[] questionWindows;
 
     public GameObject[] buttonsConfirmAnswer;
 
@@ -35,6 +34,12 @@ public class QuestionData : MonoBehaviour
                 break;
             case 3:
                 gameObject.GetComponent<Question3>().ButtonConfirmAnswer();
+                break;
+            case 4:
+                Debug.Log("Q4_TimeRunOut");
+                break;
+            case 8:
+                gameObject.GetComponent<Question8>().ButtonConfirmAnswer();
                 break;
             default:
                 Debug.Log("Check smthn");

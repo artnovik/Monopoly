@@ -81,6 +81,9 @@ public class Question1 : QuestionData
         {
             button.GetComponent<Button>().interactable = false;
         }
+
+        gameObject.SetActive(false);
+        gameManager.ResetTimer(false);
     }
 
     private void Colorizing(Text answerNumText)
