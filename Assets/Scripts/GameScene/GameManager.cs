@@ -167,16 +167,13 @@ public class GameManager : MonoBehaviour
 
     private void MoveFigures(Transform figureTransform, uint playerScore)
     {
-        ScreenMessage(true, colorError, "Stay on beginning\nCurrentScore: " + playerData.GetPlayerScore());
-
         if (playerScore > 0)
         {
-
             if (playerScore > waypointsTransforms.Length)
             {
                 var target = new Vector3(waypointsTransforms[waypointsTransforms.Length - 1].position.x, waypointsTransforms[waypointsTransforms.Length - 1].position.y, waypointsTransforms[waypointsTransforms.Length - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
-                //ScreenMessage(true, colorProcess, "Board limit reached\nWill be done when board be sliced");
+                ScreenMessage(true, colorProcess, "Board limit reached\nWill be done as soon as board be sliced");
             }
             else
             {
@@ -184,6 +181,10 @@ public class GameManager : MonoBehaviour
                 var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
             }
+        }
+        else
+        {
+            ScreenMessage(true, colorError, "Stay on beginning\nCurrentScore: " + playerData.GetPlayerScore());
         }
     }
 
