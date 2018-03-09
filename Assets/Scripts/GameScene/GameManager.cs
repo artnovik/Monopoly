@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            ScreenMessage(true, colorSuccess, "End, for now.");
+            ScreenMessage(true, colorSuccess, "End, for now :)");
             buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
@@ -173,7 +173,7 @@ public class GameManager : MonoBehaviour
             {
                 var target = new Vector3(waypointsTransforms[waypointsTransforms.Length - 1].position.x, waypointsTransforms[waypointsTransforms.Length - 1].position.y, waypointsTransforms[waypointsTransforms.Length - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
-                ScreenMessage(true, colorProcess, "Board limit reached\nWill be done as soon as board be sliced");
+                ScreenMessage(true, colorProcess, "Board limit reached\nWill move further, once board is sliced");
             }
             else
             {
