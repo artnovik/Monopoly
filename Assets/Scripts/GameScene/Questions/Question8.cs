@@ -22,6 +22,11 @@ public class Question8 : QuestionData
     [SerializeField]
     private GameObject rightAnswerButton;
 
+    private void Start()
+    {
+        answerImage.CrossFadeAlpha(0f, 0.01f, false);
+    }
+
     private void Update()
     {
         if (!isAnsweringStarted && answerObject.activeSelf)
@@ -34,7 +39,6 @@ public class Question8 : QuestionData
     private IEnumerator ImageShowing(uint duration)
     {
         timeSinceStart = 0;
-        answerImage.CrossFadeAlpha(0f, 0.01f, false);
         answerImage.CrossFadeAlpha(1.0f, duration, false);
 
         StartCoroutine(ScoreValueChange(duration));
