@@ -101,7 +101,7 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            ScreenMessage(true, colorSuccess, "Ending will be here, after all questions\nBut you see how mechanics works");
+            ScreenMessage(true, colorSuccess, "End, for now.");
             buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
