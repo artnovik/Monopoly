@@ -15,6 +15,8 @@ public class QuestionData : MonoBehaviour
 
     public GameObject[] questionWindows;
 
+    public GameObject Leaderboard;
+
     public GameObject[] buttonsConfirmAnswer;
 
     protected int windowNumber;

@@ -17,6 +17,11 @@ public class PlayerData : NetworkBehaviour
         transform.name = _pName;
     }
 
+    public string GetPlayerName()
+    {
+        return pName;
+    }
+
     /// <summary>
     /// Add specific Score value to Player's Score
     /// </summary>

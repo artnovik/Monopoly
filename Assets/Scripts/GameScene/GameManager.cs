@@ -88,6 +88,7 @@ public class GameManager : MonoBehaviour
             currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
 
             questionWindow.SetActive(true);
+            RefreshLeaderboard(currentQuestionData.Leaderboard, true);
             questionsGO[answeredQuestionsCount].SetActive(true);
 
             Debug.Log("Question: " + (currentQuestionData.number) +
@@ -119,6 +120,7 @@ public class GameManager : MonoBehaviour
         int timerTime = 0;
         timerActive = true;
 
+        RefreshLeaderboard(currentQuestionData.Leaderboard, false);
         currentQuestionData.NextWindow();
 
         while (timerActive)
@@ -169,15 +171,16 @@ public class GameManager : MonoBehaviour
 
         if (playerScore > 0)
         {
-            ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
 
             if (playerScore > waypointsTransforms.Length)
             {
                 var target = new Vector3(waypointsTransforms[waypointsTransforms.Length - 1].position.x, waypointsTransforms[waypointsTransforms.Length - 1].position.y, waypointsTransforms[waypointsTransforms.Length - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
+                //ScreenMessage(true, colorProcess, "Board limit reached\nWill be done when board be sliced");
             }
             else
             {
+                ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
                 var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
             }
@@ -259,6 +262,13 @@ public class GameManager : MonoBehaviour
     //        // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
     //    }
     //}
+
+    private void RefreshLeaderboard(GameObject Leaderboard, bool activeStatus)
+    {
+        Leaderboard.SetActive(activeStatus);
+        Leaderboard.transform.GetChild(0).gameObject.GetComponent<Text>().text =
+            playerData.GetPlayerScore() + " - " + playerData.GetPlayerName().Replace("Player ", string.Empty);
+    }
 
     private void ScreenMessage(bool activeStatus, Color32 textColor, string text)
     {
