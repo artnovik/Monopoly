@@ -35,7 +35,7 @@ public class Question4 : QuestionData
     {
         if (firstAnswerRight)
         {
-            scoreValue = scoreMaxValue / 2;
+            scoreValue = scoreMaxValue / scoreMaxValue;
             gameManager.playerData.AddPlayerScore(scoreValue);
         }
 
@@ -51,7 +51,7 @@ public class Question4 : QuestionData
     {
         if (secondAnswerRight)
         {
-            scoreValue = scoreMaxValue / 2;
+            scoreValue = scoreMaxValue / scoreMaxValue;
             gameManager.playerData.AddPlayerScore(scoreValue);
         }
 

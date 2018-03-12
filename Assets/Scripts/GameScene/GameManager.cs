@@ -89,7 +89,11 @@ public class GameManager : MonoBehaviour
 
             questionWindow.SetActive(true);
             RefreshLeaderboard(currentQuestionData.Leaderboard, true);
+
             questionsGO[answeredQuestionsCount].SetActive(true);
+
+            // ToDO Handle this Hardcode
+            currentQuestionData.questionWindows[0].SetActive(true);
 
             Debug.Log("Question: " + (currentQuestionData.number) +
                       ". MaxScore: " + currentQuestionData.scoreMaxValue +
@@ -101,7 +105,7 @@ public class GameManager : MonoBehaviour
         else
         {
             questionWindow.SetActive(false);
-            ScreenMessage(true, colorSuccess, "End, for now :)");
+            ScreenMessage(true, colorSuccess, "More questions on the way :)");
             buttonExit.SetActive(true);
             Debug.Log("Final!");
         }
