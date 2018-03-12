@@ -52,38 +52,35 @@ public class Question3 : QuestionData
         while (timeSinceStart < duration)
         {
             yield return new WaitForSeconds(1f);
-            timeSinceStart++;
 
             if (timeSinceStart < 10)
             {
                 scoreValue = scoreMaxValue;
-                Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 10 && timeSinceStart < 20)
             {
                 scoreValue = scoreMaxValue - 1;
-                Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 20 && timeSinceStart < 30)
             {
                 scoreValue = scoreMaxValue - 2;
-                Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 30 && timeSinceStart < 40)
             {
                 scoreValue = scoreMaxValue - 3;
-                Debug.Log(scoreValue.ToString());
             }
             else if (timeSinceStart >= 40 && timeSinceStart < 50)
             {
                 scoreValue = scoreMaxValue - 4;
-                Debug.Log(scoreValue.ToString());
             }
             else
             {
                 scoreValue = scoreMaxValue - scoreMaxValue + 1;
-                Debug.Log("Score is: " + scoreValue + " now!");
             }
+
+            Debug.Log("Score is: " + scoreValue + " now!");
+
+            timeSinceStart++;
         }
     }
 
