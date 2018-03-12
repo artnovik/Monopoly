@@ -14,9 +14,24 @@ public class Question2 : QuestionData
 
     private uint scoreValue;
 
-    private int answeredRightCountFirst;
-    private int answeredRightCountSecond;
-    private int answeredRightCountThird;
+    private uint answeredRightCountFirst;
+    private uint answeredRightCountSecond;
+    private uint answeredRightCountThird;
+
+    [SerializeField]
+    private GameObject[] allAnswerButtonsFirst;
+
+    [SerializeField]
+    private GameObject[] allAnswerButtonsSecond;
+
+    [SerializeField]
+    private GameObject[] allAnswerButtonsThird;
+
+    private const uint maxAllowedClicks = 3;
+
+    private uint clickedButtonsCountFirst;
+    private uint clickedButtonsCountSecond;
+    private uint clickedButtonsCountThird;
 
     [SerializeField]
     private GameObject[] firstRightAnswerButtons;
@@ -39,6 +54,19 @@ public class Question2 : QuestionData
                 firstAnswerRight = true;
             }
         }
+
+        clickedButtonsCountFirst++;
+
+        if (clickedButtonsCountFirst > maxAllowedClicks)
+        {
+            foreach (var buttonGO in allAnswerButtonsFirst)
+            {
+                if (!firstRightAnswerButtons.Contains(buttonGO))
+                {
+                    buttonGO.SetActive(false);
+                }
+            }
+        }
     }
 
     public void ButtonSecondAnswerSelect(GameObject buttonSecondClicked)
@@ -51,6 +79,19 @@ public class Question2 : QuestionData
             if (answeredRightCountSecond == scoreMaxValue)
             {
                 secondAnswerRight = true;
+            }
+
+            clickedButtonsCountSecond++;
+
+            if (clickedButtonsCountSecond > 3)
+            {
+                foreach (var buttonGO in allAnswerButtonsSecond)
+                {
+                    if (!secondRightAnswerButtons.Contains(buttonGO))
+                    {
+                        buttonGO.SetActive(false);
+                    }
+                }
             }
         }
     }
@@ -65,6 +106,19 @@ public class Question2 : QuestionData
             if (answeredRightCountThird == scoreMaxValue)
             {
                 thirdAnswerRight = true;
+            }
+
+            clickedButtonsCountThird++;
+
+            if (clickedButtonsCountThird > 3)
+            {
+                foreach (var buttonGO in allAnswerButtonsThird)
+                {
+                    if (!thirdRightAnswerButtons.Contains(buttonGO))
+                    {
+                        buttonGO.SetActive(false);
+                    }
+                }
             }
         }
     }
