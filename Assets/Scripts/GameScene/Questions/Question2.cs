@@ -27,14 +27,9 @@ public class Question2 : QuestionData
     [SerializeField]
     private GameObject[] thirdRightAnswerButtons;
 
-    private Color pressedColor = new Color32(225, 255, 255, 160);
-
     public void ButtonFirstAnswerSelect(GameObject buttonFirstClicked)
     {
         buttonFirstClicked.GetComponent<Button>().interactable = false;
-        //ColorBlock cb = buttonFirstClicked.GetComponent<Button>().colors;
-        //cb.normalColor = pressedColor;
-        //buttonFirstClicked.GetComponent<Button>().colors = cb;
 
         if (firstRightAnswerButtons.Contains(buttonFirstClicked))
         {
@@ -49,9 +44,6 @@ public class Question2 : QuestionData
     public void ButtonSecondAnswerSelect(GameObject buttonSecondClicked)
     {
         buttonSecondClicked.GetComponent<Button>().interactable = false;
-        //ColorBlock cb = buttonFirstClicked.GetComponent<Button>().colors;
-        //cb.normalColor = pressedColor;
-        //buttonFirstClicked.GetComponent<Button>().colors = cb;
 
         if (secondRightAnswerButtons.Contains(buttonSecondClicked))
         {
@@ -66,9 +58,6 @@ public class Question2 : QuestionData
     public void ButtonThirdAnswerSelect(GameObject buttonThirdClicked)
     {
         buttonThirdClicked.GetComponent<Button>().interactable = false;
-        //ColorBlock cb = buttonFirstClicked.GetComponent<Button>().colors;
-        //cb.normalColor = pressedColor;
-        //buttonFirstClicked.GetComponent<Button>().colors = cb;
 
         if (thirdRightAnswerButtons.Contains(buttonThirdClicked))
         {
