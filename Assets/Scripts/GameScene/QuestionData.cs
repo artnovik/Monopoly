@@ -38,13 +38,18 @@ public class QuestionData : MonoBehaviour
                 gameObject.GetComponent<Question3>().ButtonConfirmAnswer();
                 break;
             case 4:
-                Debug.Log("Q4_TimeRunOut");
+                // Temp
+                gameObject.GetComponent<Question4>().ButtonFirstConfirmAnswer();
                 break;
             case 8:
                 gameObject.GetComponent<Question8>().ButtonConfirmAnswer();
                 break;
+            case 10:
+                // Temp
+                gameObject.GetComponent<Question10>().ButtonFirstConfirmAnswer();
+                break;
             default:
-                Debug.Log("Check smthn");
+                Debug.Log("You're passing nonexistent question number");
                 break;
         }
     }
