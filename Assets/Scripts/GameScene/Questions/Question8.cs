@@ -31,7 +31,7 @@ public class Question8 : QuestionData
     {
         if (!isAnsweringStarted && answerObject.activeSelf)
         {
-            StartCoroutine(ImageShowing(duration));
+            StartCoroutine(ImageShowing(answerDuration));
             isAnsweringStarted = true;
         }
     }

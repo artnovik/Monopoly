@@ -10,7 +10,7 @@ public class QuestionData : MonoBehaviour
 
     public uint scoreMaxValue;
 
-    public uint duration = 60;
+    public uint answerDuration = 60;
 
     public uint number;
 
