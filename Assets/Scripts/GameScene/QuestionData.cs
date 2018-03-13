@@ -20,12 +20,12 @@ public class QuestionData : MonoBehaviour
 
     public GameObject Leaderboard;
 
-    protected int windowNumber;
+    public int windowNumber;
 
     public void NextWindow()
     {
-        gameObject.GetComponent<QuestionData>().questionWindows[windowNumber].SetActive(false);
-        gameObject.GetComponent<QuestionData>().questionWindows[++windowNumber].SetActive(true);
+        questionWindows[windowNumber].SetActive(false);
+        questionWindows[++windowNumber].SetActive(true);
     }
 
     public void FinishAnswerIfTimerRunsOut(uint questionNumber)
