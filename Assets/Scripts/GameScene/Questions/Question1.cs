@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,24 +23,6 @@ public class Question1 : QuestionData
 
     public void ButtonImageSelect(GameObject buttonClicked)
     {
-        /*if (buttonClicked.transform.Find("AnswerNumberText").gameObject.GetComponent<Text>().text != string.Empty)
-        {
-            // If button was clicked
-            buttonClicked.transform.Find("AnswerNumberText").gameObject.GetComponent<Text>().text = string.Empty;
-            firstClickDone = !firstClickDone;
-            Debug.Log("Deselect!");
-            return;
-        }*/
-
-        //if (buttonClickedContainer == buttonClicked)
-        //{
-        //    Debug.Log("Same Button! (Deselect)");
-        //    buttonClicked.transform.Find("AnswerNumberText").gameObject.GetComponent<Text>().text = string.Empty;
-        //    clickNum--;
-        //    return;
-        //}
-        //buttonClickedContainer = buttonClicked;
-
         buttonClicked.GetComponent<Button>().interactable = false;
 
         if (!firstClickDone)

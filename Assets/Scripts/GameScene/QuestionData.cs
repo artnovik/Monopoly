@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class QuestionData : MonoBehaviour
 {
+    [Header("QuestionData")]
     public GameManager gameManager;
 
     public uint scoreMaxValue;
@@ -15,9 +16,9 @@ public class QuestionData : MonoBehaviour
 
     public GameObject[] questionWindows;
 
-    public GameObject Leaderboard;
-
     public GameObject[] buttonsConfirmAnswer;
+
+    public GameObject Leaderboard;
 
     protected int windowNumber;
 
