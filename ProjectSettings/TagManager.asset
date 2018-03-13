@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Connect
   - Answer
+  - Point
   layers:
   - Default
   - TransparentFX
