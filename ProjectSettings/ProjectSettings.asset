@@ -648,9 +648,9 @@ PlayerSettings:
     UNet: 1
   facebookSdkVersion: 7.9.4
   apiCompatibilityLevel: 2
-  cloudProjectId: 4191cc72-7fa5-478a-aea8-c347cc4a790d
+  cloudProjectId: 428d0411-13b0-44dc-80bc-93e927cb15a4
   projectName: Monopoly
-  organizationId: gil-elnekave
+  organizationId: dudybin
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

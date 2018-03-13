@@ -44,26 +44,29 @@ public class Question2 : QuestionData
 
     public void ButtonFirstAnswerSelect(GameObject buttonFirstClicked)
     {
-        buttonFirstClicked.GetComponent<Button>().interactable = false;
-
-        if (firstRightAnswerButtons.Contains(buttonFirstClicked))
+        if (clickedButtonsCountFirst < maxAllowedClicks)
         {
-            answeredRightCountFirst++;
-            if (answeredRightCountFirst == scoreMaxValue)
-            {
-                firstAnswerRight = true;
-            }
-        }
+            clickedButtonsCountFirst++;
 
-        clickedButtonsCountFirst++;
+            buttonFirstClicked.GetComponent<Button>().interactable = false;
 
-        if (clickedButtonsCountFirst > maxAllowedClicks)
-        {
-            foreach (var buttonGO in allAnswerButtonsFirst)
+            if (firstRightAnswerButtons.Contains(buttonFirstClicked))
             {
-                if (!firstRightAnswerButtons.Contains(buttonGO))
+                answeredRightCountFirst++;
+                if (answeredRightCountFirst == scoreMaxValue)
                 {
-                    buttonGO.SetActive(false);
+                    firstAnswerRight = true;
+                }
+            }
+
+            if (clickedButtonsCountFirst == maxAllowedClicks)
+            {
+                foreach (var buttonGO in allAnswerButtonsFirst)
+                {
+                    if (buttonGO.GetComponent<Button>().interactable)
+                    {
+                        buttonGO.SetActive(false);
+                    }
                 }
             }
         }
@@ -71,23 +74,26 @@ public class Question2 : QuestionData
 
     public void ButtonSecondAnswerSelect(GameObject buttonSecondClicked)
     {
-        buttonSecondClicked.GetComponent<Button>().interactable = false;
-
-        if (secondRightAnswerButtons.Contains(buttonSecondClicked))
+        if (clickedButtonsCountSecond < maxAllowedClicks)
         {
-            answeredRightCountSecond++;
-            if (answeredRightCountSecond == scoreMaxValue)
-            {
-                secondAnswerRight = true;
-            }
-
             clickedButtonsCountSecond++;
 
-            if (clickedButtonsCountSecond > 3)
+            buttonSecondClicked.GetComponent<Button>().interactable = false;
+
+            if (secondRightAnswerButtons.Contains(buttonSecondClicked))
+            {
+                answeredRightCountSecond++;
+                if (answeredRightCountSecond == scoreMaxValue)
+                {
+                    secondAnswerRight = true;
+                }
+            }
+
+            if (clickedButtonsCountSecond == maxAllowedClicks)
             {
                 foreach (var buttonGO in allAnswerButtonsSecond)
                 {
-                    if (!secondRightAnswerButtons.Contains(buttonGO))
+                    if (buttonGO.GetComponent<Button>().interactable)
                     {
                         buttonGO.SetActive(false);
                     }
@@ -98,23 +104,26 @@ public class Question2 : QuestionData
 
     public void ButtonThirdAnswerSelect(GameObject buttonThirdClicked)
     {
-        buttonThirdClicked.GetComponent<Button>().interactable = false;
-
-        if (thirdRightAnswerButtons.Contains(buttonThirdClicked))
+        if (clickedButtonsCountThird < maxAllowedClicks)
         {
-            answeredRightCountThird++;
-            if (answeredRightCountThird == scoreMaxValue)
-            {
-                thirdAnswerRight = true;
-            }
-
             clickedButtonsCountThird++;
 
-            if (clickedButtonsCountThird > 3)
+            buttonThirdClicked.GetComponent<Button>().interactable = false;
+
+            if (thirdRightAnswerButtons.Contains(buttonThirdClicked))
+            {
+                answeredRightCountThird++;
+                if (answeredRightCountThird == scoreMaxValue)
+                {
+                    thirdAnswerRight = true;
+                }
+            }
+
+            if (clickedButtonsCountThird == maxAllowedClicks)
             {
                 foreach (var buttonGO in allAnswerButtonsThird)
                 {
-                    if (!thirdRightAnswerButtons.Contains(buttonGO))
+                    if (buttonGO.GetComponent<Button>().interactable)
                     {
                         buttonGO.SetActive(false);
                     }

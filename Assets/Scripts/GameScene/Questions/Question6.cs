@@ -22,22 +22,25 @@ public class Question6 : QuestionData
 
     public void ButtonAnswerSelect(GameObject buttonClicked)
     {
-        buttonClicked.GetComponent<Button>().interactable = false;
-
-        if (rightAnswerButtons.Contains(buttonClicked))
+        if (clickedButtonsCount < maxAllowedClicks)
         {
-            answeredRightCount++;
-        }
+            clickedButtonsCount++;
 
-        clickedButtonsCount++;
+            buttonClicked.GetComponent<Button>().interactable = false;
 
-        if (clickedButtonsCount > maxAllowedClicks)
-        {
-            foreach (var buttonGO in allAnswerButtons)
+            if (rightAnswerButtons.Contains(buttonClicked))
             {
-                if (!rightAnswerButtons.Contains(buttonGO))
+                answeredRightCount++;
+            }
+
+            if (clickedButtonsCount == maxAllowedClicks)
+            {
+                foreach (var buttonGO in allAnswerButtons)
                 {
-                    buttonGO.SetActive(false);
+                    if (buttonGO.GetComponent<Button>().interactable)
+                    {
+                        buttonGO.SetActive(false);
+                    }
                 }
             }
         }
@@ -48,7 +51,10 @@ public class Question6 : QuestionData
         scoreValue = answeredRightCount;
         gameManager.playerData.AddPlayerScore(scoreValue);
 
-        buttonsConfirmAnswer[windowNumber].GetComponent<Button>().interactable = false;
+        foreach (var button in buttonsConfirmAnswer)
+        {
+            button.GetComponent<Button>().interactable = false;
+        }
 
         gameManager.answerDone = true;
 

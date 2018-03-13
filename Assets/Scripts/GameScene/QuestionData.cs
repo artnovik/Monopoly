@@ -34,6 +34,10 @@ public class QuestionData : MonoBehaviour
             case 1:
                 gameObject.GetComponent<Question1>().ButtonConfirmAnswer();
                 break;
+            case 2:
+                // Temp
+                gameObject.GetComponent<Question2>().ButtonFirstConfirmAnswer();
+                break;
             case 3:
                 gameObject.GetComponent<Question3>().ButtonConfirmAnswer();
                 break;
@@ -41,12 +45,27 @@ public class QuestionData : MonoBehaviour
                 // Temp
                 gameObject.GetComponent<Question4>().ButtonFirstConfirmAnswer();
                 break;
+            case 5:
+                gameObject.GetComponent<Question5>().ButtonConfirmAnswer();
+                break;
+            case 6:
+                gameObject.GetComponent<Question6>().ButtonConfirmAnswer();
+                break;
             case 8:
                 gameObject.GetComponent<Question8>().ButtonConfirmAnswer();
                 break;
             case 10:
                 // Temp
                 gameObject.GetComponent<Question10>().ButtonFirstConfirmAnswer();
+                break;
+            case 12:
+                gameObject.GetComponent<Question12>().ButtonConfirmAnswer();
+                break;
+            case 13:
+                gameObject.GetComponent<Question13>().ButtonConfirmAnswer();
+                break;
+            case 17:
+                gameObject.GetComponent<Question17>().ButtonConfirmAnswer();
                 break;
             default:
                 Debug.Log("You're passing nonexistent question number");

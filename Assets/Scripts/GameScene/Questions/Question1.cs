@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Question1 : QuestionData
 {
-
     private int clickNum;
     private string firstClickNumber;
     private string secondClickNumber;

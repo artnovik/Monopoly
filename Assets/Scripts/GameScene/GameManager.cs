@@ -82,13 +82,14 @@ public class GameManager : MonoBehaviour
 
     private void QuestionPopUp()
     {
-        // If there's still questions in list
         if (answeredQuestionsCount < questionsGO.Length)
         {
+            // If there's still questions in list
+
             currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
 
             questionWindow.SetActive(true);
-            RefreshLeaderboard(currentQuestionData.Leaderboard, true);
+            LeaderboardControl(true);
 
             questionsGO[answeredQuestionsCount].SetActive(true);
 
@@ -101,9 +102,10 @@ public class GameManager : MonoBehaviour
 
             Invoke("AnswerStart", 5f);
         }
-        // If questions are ended
         else
         {
+            // If questions are ended
+
             questionWindow.SetActive(false);
             ScreenMessage(true, colorSuccess, "More questions on the way :)");
             buttonExit.SetActive(true);
@@ -124,7 +126,7 @@ public class GameManager : MonoBehaviour
         int timerTime = 0;
         timerActive = true;
 
-        RefreshLeaderboard(currentQuestionData.Leaderboard, false);
+        LeaderboardControl(false);
         currentQuestionData.NextWindow();
 
         while (timerActive)
@@ -142,11 +144,6 @@ public class GameManager : MonoBehaviour
 
                 yield return new WaitForSeconds(1);
 
-                //if (questionsGO[answeredQuestionsCount].activeSelf)
-                //{
-                //    questionsGO[answeredQuestionsCount].SetActive(false);
-                //}
-
                 ResetTimer(false);
                 questionWindow.SetActive(false);
 
@@ -158,7 +155,7 @@ public class GameManager : MonoBehaviour
 
                 // MoveFigures
                 MoveFigures(playerFigureTransform, playerData.GetPlayerScore());
-                Debug.Log("Question fade out");
+                Debug.Log("Question " + currentQuestionData.number + " fade out");
                 answeredQuestionsCount++;
                 yield return new WaitForSeconds(5);
                 ScreenMessage(false);
@@ -201,14 +198,9 @@ public class GameManager : MonoBehaviour
         // GC will trigger unless we define this ahead of time
         var wait = new WaitForEndOfFrame();
 
-        Debug.Log("Score is > 0. We are moving.");
-
         // Continue until we're there
         while (distance >= closeEnough)
         {
-            // Confirm that it's moving
-            //Debug.Log("Executing Movement");
-
             // Move a bit then  wait until next  frame
             figureTransform.position = Vector3.Slerp(figureTransform.position, targetTransform, 0.01f);
             yield return wait;
@@ -220,58 +212,13 @@ public class GameManager : MonoBehaviour
         // Complete the motion to prevent negligible sliding
         figureTransform.position = targetTransform;
 
-        // Confirm  it's ended
-        Debug.Log("Movement Complete");
+        Debug.Log("Movement complete");
     }
 
-    // MessageResult/CheckAnswerClick
-    //private IEnumerator MessageResult(bool answerResultIsTrue)
-    //{
-    //    const float delay = 3f;
-
-    //    answerDone = true;
-    //    questionWindow.SetActive(false);
-
-    //    if (answerResultIsTrue)
-    //    {
-    //        resultText.color = colorSuccess;
-    //        ScreenMessage(true, "Correct!");
-    //    }
-    //    else
-    //    {
-    //        resultText.color = colorError;
-    //        ScreenMessage(true, "Wrong!");
-    //    }
-
-    //    yield return new WaitForSeconds(delay);
-    //    ScreenMessage(false);
-    //}
-
-    //public void CheckAnswerClick(GameObject clickedAnswer)
-    //{
-    //    // Badass logic
-    //    for (int i = 0; i < answers_GOs.Length; i++)
-    //    {
-    //        if ((answers_GOs[i] == clickedAnswer) && (i + 1) == QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
-    //        {
-    //            Debug.Log("Correct Answer!");
-    //            playerData.AddPlayerScore(QuestionsList.questionsList[answeredQuestionsCount].scoreMaxValue);
-    //            StartCoroutine(MessageResult(true));
-    //        }
-    //        else if ((answers_GOs[i] == clickedAnswer) && (i + 1) != QuestionsList.questionsList[answeredQuestionsCount].rightAnswerNumber)
-    //        {
-    //            Debug.Log("Incorrect Answer!");
-    //            StartCoroutine(MessageResult(false));
-    //        }
-
-    //        // ToDo In any case: Waiting for allAnswered OR timerEnded. Then Next question.
-    //    }
-    //}
-
-    private void RefreshLeaderboard(GameObject Leaderboard, bool activeStatus)
+    private void LeaderboardControl(bool activeStatus)
     {
-        Leaderboard.SetActive(activeStatus);
-        Leaderboard.transform.GetChild(0).gameObject.GetComponent<Text>().text =
+        currentQuestionData.Leaderboard.SetActive(activeStatus);
+        currentQuestionData.Leaderboard.transform.GetChild(0).gameObject.GetComponent<Text>().text =
             playerData.GetPlayerScore() + " - " + playerData.GetPlayerName().Replace("Player ", string.Empty);
     }
 
