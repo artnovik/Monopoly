@@ -18,14 +18,16 @@ public class QuestionData : MonoBehaviour
 
     public GameObject[] buttonsConfirmAnswer;
 
-    public GameObject Leaderboard;
-
-    public int windowNumber;
+    protected int windowNumber;
 
     public void NextWindow()
     {
-        questionWindows[windowNumber].SetActive(false);
-        questionWindows[++windowNumber].SetActive(true);
+        //if (questionWindows != null)
+        //{
+        //    questionWindows[windowNumber].SetActive(false);
+        //    questionWindows[++windowNumber].SetActive(true);
+        //}
+        ++windowNumber;
     }
 
     public void FinishAnswerIfTimerRunsOut(uint questionNumber)

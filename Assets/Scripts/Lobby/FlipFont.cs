@@ -51,6 +51,14 @@ public class FlipFont : MonoBehaviour
         GameObject.Find("InputFieldName").GetComponent<InputField>().MoveTextStart(false);
     }
 
+    public void AndroidMoveOnEndEdit()
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            Reverse(GameObject.Find("InputFieldName").GetComponent<InputField>().text);
+        }
+    }
+
     public void MoveCaretAddress()
     {
         if (GameObject.Find("InputFieldAddress").GetComponent<InputField>().text[0] == '1'

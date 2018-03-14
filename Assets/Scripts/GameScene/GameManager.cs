@@ -34,6 +34,9 @@ public class GameManager : MonoBehaviour
     private GameObject timerObject;
 
     [SerializeField]
+    private GameObject leaderboard;
+
+    [SerializeField]
     private GameObject buttonExit;
 
     [SerializeField]
@@ -51,6 +54,9 @@ public class GameManager : MonoBehaviour
     private Image timerFillImage;
 
     private QuestionData currentQuestionData;
+
+    private const string pointTag = "Point";
+    private const string answerTag = "Answer";
 
     private void Start()
     {
@@ -89,18 +95,14 @@ public class GameManager : MonoBehaviour
             currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
 
             questionWindow.SetActive(true);
-            LeaderboardControl(true);
+
 
             questionsGO[answeredQuestionsCount].SetActive(true);
-
-            // ToDO Handle this Hardcode
-            currentQuestionData.questionWindows[0].SetActive(true);
-
             Debug.Log("Question: " + (currentQuestionData.number) +
                       ". MaxScore: " + currentQuestionData.scoreMaxValue +
-                      ". Duration: " + currentQuestionData.duration + " s");
+                      ". Duration: " + currentQuestionData.answerDuration + " s");
 
-            Invoke("AnswerStart", 5f);
+            PointsControl();
         }
         else
         {
@@ -113,21 +115,57 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void AnswerStart()
+    private void PointsControl()
     {
-        StartCoroutine(StartCountdown(currentQuestionData.duration));
+        StartCoroutine(WindowShow(5));
     }
 
-    private IEnumerator StartCountdown(uint duration)
+    private void AnswerStart()
+    {
+        StartCoroutine(StartAnswerCountdown(currentQuestionData.answerDuration));
+    }
+
+    private IEnumerator WindowShow(uint durationPoint)
+    {
+        foreach (GameObject currentWindow in currentQuestionData.questionWindows)
+        {
+            bool windowIsPoint = currentWindow.CompareTag(pointTag);
+            bool windowIsAnswer = currentWindow.CompareTag(answerTag);
+
+            currentWindow.SetActive(true);
+
+            if (windowIsPoint)
+            {
+                LeaderboardControl(true);
+                yield return new WaitForSeconds(durationPoint);
+                // ToDo Second isn't appearing
+            }
+            else if (windowIsAnswer)
+            {
+                LeaderboardControl(false);
+                Invoke("AnswerStart", 0f);
+                // ToDo GoNExt (IMPORTANT) handle condition
+                yield return new WaitForSeconds(currentQuestionData.answerDuration+1);
+            }
+            else
+            {
+                Debug.Log("Check tags!");
+            }
+
+            currentQuestionData.NextWindow();
+            currentWindow.SetActive(false);
+        }
+
+        QuestionPopUp();
+    }
+
+    private IEnumerator StartAnswerCountdown(uint duration)
     {
         ResetTimer(true);
         answerDone = false;
 
         int timerTime = 0;
         timerActive = true;
-
-        LeaderboardControl(false);
-        currentQuestionData.NextWindow();
 
         while (timerActive)
         {
@@ -160,7 +198,6 @@ public class GameManager : MonoBehaviour
                 yield return new WaitForSeconds(5);
                 ScreenMessage(false);
 
-                QuestionPopUp();
                 yield break;
             }
         }
@@ -191,11 +228,9 @@ public class GameManager : MonoBehaviour
 
     private static IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
     {
-        // Will need to perform some of this process and yield until next frames
         const float closeEnough = 0.05f;
         float distance = (figureTransform.position - targetTransform).magnitude;
 
-        // GC will trigger unless we define this ahead of time
         var wait = new WaitForEndOfFrame();
 
         // Continue until we're there
@@ -209,7 +244,7 @@ public class GameManager : MonoBehaviour
             distance = (figureTransform.position - targetTransform).magnitude;
         }
 
-        // Complete the motion to prevent negligible sliding
+        // Complete the motion to prevent position mistakes
         figureTransform.position = targetTransform;
 
         Debug.Log("Movement complete");
@@ -217,8 +252,8 @@ public class GameManager : MonoBehaviour
 
     private void LeaderboardControl(bool activeStatus)
     {
-        currentQuestionData.Leaderboard.SetActive(activeStatus);
-        currentQuestionData.Leaderboard.transform.GetChild(0).gameObject.GetComponent<Text>().text =
+        leaderboard.SetActive(activeStatus);
+        leaderboard.transform.GetChild(0).gameObject.GetComponent<Text>().text =
             playerData.GetPlayerScore() + " - " + playerData.GetPlayerName().Replace("Player ", string.Empty);
     }
 
