@@ -40,14 +40,6 @@ public class Question12 : QuestionData
             gameManager.playerData.AddPlayerScore(scoreValue);
         }
 
-        foreach (var button in buttonsConfirmAnswer)
-        {
-            button.GetComponent<Button>().interactable = false;
-        }
-
-        gameManager.answerDone = true;
-
-        gameObject.SetActive(false);
-        gameManager.ResetTimer(false);
+        Confirm();
     }
 }

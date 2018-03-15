@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     private int answeredQuestionsCount;
     private bool timerActive;
     private bool allAnswered;
+    private bool answerWindowFinished;
 
     [HideInInspector]
     public bool answerDone;
@@ -94,10 +95,6 @@ public class GameManager : MonoBehaviour
 
             currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
 
-            questionWindow.SetActive(true);
-
-
-            questionsGO[answeredQuestionsCount].SetActive(true);
             Debug.Log("Question: " + (currentQuestionData.number) +
                       ". MaxScore: " + currentQuestionData.scoreMaxValue +
                       ". Duration: " + currentQuestionData.answerDuration + " s");
@@ -132,30 +129,41 @@ public class GameManager : MonoBehaviour
             bool windowIsPoint = currentWindow.CompareTag(pointTag);
             bool windowIsAnswer = currentWindow.CompareTag(answerTag);
 
+            questionWindow.SetActive(true);
+            questionsGO[answeredQuestionsCount].SetActive(true);
+
             currentWindow.SetActive(true);
 
             if (windowIsPoint)
             {
                 LeaderboardControl(true);
                 yield return new WaitForSeconds(durationPoint);
-                // ToDo Second isn't appearing
             }
             else if (windowIsAnswer)
             {
                 LeaderboardControl(false);
+                answerWindowFinished = false;
                 Invoke("AnswerStart", 0f);
-                // ToDo GoNExt (IMPORTANT) handle condition
-                yield return new WaitForSeconds(currentQuestionData.answerDuration+1);
+                int timerTime = 0;
+
+                while (timerTime < currentQuestionData.answerDuration*2 && !answerWindowFinished)
+                {
+                    yield return new WaitForSeconds(1f);
+                    timerTime++;
+                }
             }
             else
             {
                 Debug.Log("Check tags!");
             }
 
-            currentQuestionData.NextWindow();
+            currentQuestionData.IncrementWindNum();
             currentWindow.SetActive(false);
         }
 
+        answeredQuestionsCount++;
+        currentQuestionData.Confirm();
+        Debug.Log("Question " + currentQuestionData.number + " fade out");
         QuestionPopUp();
     }
 
@@ -180,8 +188,8 @@ public class GameManager : MonoBehaviour
             {
                 timerActive = false;
 
-                yield return new WaitForSeconds(1);
-
+                yield return new WaitForSeconds(1f);
+                
                 ResetTimer(false);
                 questionWindow.SetActive(false);
 
@@ -193,10 +201,9 @@ public class GameManager : MonoBehaviour
 
                 // MoveFigures
                 MoveFigures(playerFigureTransform, playerData.GetPlayerScore());
-                Debug.Log("Question " + currentQuestionData.number + " fade out");
-                answeredQuestionsCount++;
-                yield return new WaitForSeconds(5);
+                yield return new WaitForSeconds(5f);
                 ScreenMessage(false);
+                answerWindowFinished = true;
 
                 yield break;
             }

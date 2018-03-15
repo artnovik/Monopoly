@@ -132,49 +132,36 @@ public class Question2 : QuestionData
         }
     }
 
-    public void ButtonFirstConfirmAnswer()
+    public void ButtonConfirmAnswer()
     {
-        if (firstAnswerRight)
+        switch (confirmButtonsClickCount)
         {
-            scoreValue = scoreMaxValue / scoreMaxValue;
-            gameManager.playerData.AddPlayerScore(scoreValue);
+            case 0:
+                if (firstAnswerRight)
+                {
+                    scoreValue = scoreMaxValue / scoreMaxValue;
+                    gameManager.playerData.AddPlayerScore(scoreValue);
+                }
+                break;
+            case 1:
+                if (secondAnswerRight)
+                {
+                    scoreValue = scoreMaxValue / scoreMaxValue;
+                    gameManager.playerData.AddPlayerScore(scoreValue);
+                }
+                break;
+            case 2:
+                if (thirdAnswerRight)
+                {
+                    scoreValue = scoreMaxValue / 2;
+                    gameManager.playerData.AddPlayerScore(scoreValue);
+                }
+                break;
+            default:
+                Debug.Log("Add more cases!");
+                break;
         }
 
-        buttonsConfirmAnswer[windowNumber].GetComponent<Button>().interactable = false;
-
-        gameManager.answerDone = true;
-
-        gameObject.SetActive(false);
-        gameManager.ResetTimer(false);
-    }
-
-    public void ButtonSecondConfirmAnswer()
-    {
-        if (secondAnswerRight)
-        {
-            scoreValue = scoreMaxValue / scoreMaxValue;
-            gameManager.playerData.AddPlayerScore(scoreValue);
-        }
-
-        buttonsConfirmAnswer[windowNumber].GetComponent<Button>().interactable = false;
-        gameManager.answerDone = true;
-
-        gameObject.SetActive(false);
-        gameManager.ResetTimer(false);
-    }
-
-    public void ButtonThirdConfirmAnswer()
-    {
-        if (thirdAnswerRight)
-        {
-            scoreValue = scoreMaxValue / 2;
-            gameManager.playerData.AddPlayerScore(scoreValue);
-        }
-
-        buttonsConfirmAnswer[windowNumber].GetComponent<Button>().interactable = false;
-        gameManager.answerDone = true;
-
-        gameObject.SetActive(false);
-        gameManager.ResetTimer(false);
+        Confirm();
     }
 }

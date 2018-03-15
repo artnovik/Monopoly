@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestionData : MonoBehaviour
 {
@@ -18,15 +19,11 @@ public class QuestionData : MonoBehaviour
 
     public GameObject[] buttonsConfirmAnswer;
 
-    protected int windowNumber;
+    protected uint windowNumber;
+    protected uint confirmButtonsClickCount;
 
-    public void NextWindow()
+    public void IncrementWindNum()
     {
-        //if (questionWindows != null)
-        //{
-        //    questionWindows[windowNumber].SetActive(false);
-        //    questionWindows[++windowNumber].SetActive(true);
-        //}
         ++windowNumber;
     }
 
@@ -38,15 +35,13 @@ public class QuestionData : MonoBehaviour
                 gameObject.GetComponent<Question1>().ButtonConfirmAnswer();
                 break;
             case 2:
-                // Temp
-                gameObject.GetComponent<Question2>().ButtonFirstConfirmAnswer();
+                gameObject.GetComponent<Question2>().ButtonConfirmAnswer();
                 break;
             case 3:
                 gameObject.GetComponent<Question3>().ButtonConfirmAnswer();
                 break;
             case 4:
-                // Temp
-                gameObject.GetComponent<Question4>().ButtonFirstConfirmAnswer();
+                gameObject.GetComponent<Question4>().ButtonConfirmAnswer();
                 break;
             case 5:
                 gameObject.GetComponent<Question5>().ButtonConfirmAnswer();
@@ -58,8 +53,7 @@ public class QuestionData : MonoBehaviour
                 gameObject.GetComponent<Question8>().ButtonConfirmAnswer();
                 break;
             case 10:
-                // Temp
-                gameObject.GetComponent<Question10>().ButtonFirstConfirmAnswer();
+                gameObject.GetComponent<Question10>().ButtonConfirmAnswer();
                 break;
             case 12:
                 gameObject.GetComponent<Question12>().ButtonConfirmAnswer();
@@ -74,5 +68,18 @@ public class QuestionData : MonoBehaviour
                 Debug.Log("You're passing nonexistent question number");
                 break;
         }
+    }
+
+    public void Confirm()
+    {
+        if (buttonsConfirmAnswer.Length > confirmButtonsClickCount)
+        {
+            buttonsConfirmAnswer[confirmButtonsClickCount].GetComponent<Button>().interactable = false;
+            gameManager.answerDone = true;
+            gameManager.ResetTimer(false);
+            confirmButtonsClickCount++;
+        }
+
+        gameObject.SetActive(false);
     }
 }

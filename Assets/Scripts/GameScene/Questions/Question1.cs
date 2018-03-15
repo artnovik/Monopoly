@@ -42,7 +42,7 @@ public class Question1 : QuestionData
             if (firstClickNumber == secondClickNumber)
             {
                 scoreValue += scoreMaxValue / 5;
-                Debug.Log("Right! Player will gain + " + scoreMaxValue / 5 + ". Total be: " + scoreValue);
+                Debug.Log("Right! Player will gain + " + scoreMaxValue / 5 + ". Total gain: " + scoreValue);
             }
             else
             {
@@ -57,15 +57,8 @@ public class Question1 : QuestionData
     public void ButtonConfirmAnswer()
     {
         gameManager.playerData.AddPlayerScore(scoreValue);
-        gameManager.answerDone = true;
 
-        foreach (var button in buttonsConfirmAnswer)
-        {
-            button.GetComponent<Button>().interactable = false;
-        }
-
-        gameObject.SetActive(false);
-        gameManager.ResetTimer(false);
+        Confirm();
     }
 
     private void Colorizing(Text answerNumText)
@@ -88,7 +81,7 @@ public class Question1 : QuestionData
                 answerNumText.color = colorAnswer5;
                 break;
             default:
-                Debug.Log("Check smthn");
+                Debug.Log("Check code");
                 break;
         }
     }

@@ -43,43 +43,38 @@ public class Question3 : QuestionData
 
         StartCoroutine(ScoreValueChange(duration));
         yield return new WaitForSeconds(duration);
-
-        Debug.Log("Ending");
     }
 
     private IEnumerator ScoreValueChange(uint duration)
     {
         while (timeSinceStart < duration)
         {
+            switch (timeSinceStart)
+            {
+                case 0:
+                case 1:
+                    scoreValue = scoreMaxValue;
+                    Debug.Log("StartScore is: " + scoreValue + " !");
+                    break;
+                case 10:
+                    scoreValue = scoreMaxValue - 1;
+                    Debug.Log("Score is: " + scoreValue + " now!");
+                    break;
+                case 20:
+                    scoreValue = scoreMaxValue - 2;
+                    Debug.Log("Score is: " + scoreValue + " now!");
+                    break;
+                case 30:
+                    scoreValue = scoreMaxValue - 3;
+                    Debug.Log("Score is: " + scoreValue + " now!");
+                    break;
+                case 40:
+                    scoreValue = scoreMaxValue - 4;
+                    Debug.Log("Score is: " + scoreValue + " now!");
+                    break;
+            }
+
             yield return new WaitForSeconds(1f);
-
-            if (timeSinceStart < 10)
-            {
-                scoreValue = scoreMaxValue;
-            }
-            else if (timeSinceStart >= 10 && timeSinceStart < 20)
-            {
-                scoreValue = scoreMaxValue - 1;
-            }
-            else if (timeSinceStart >= 20 && timeSinceStart < 30)
-            {
-                scoreValue = scoreMaxValue - 2;
-            }
-            else if (timeSinceStart >= 30 && timeSinceStart < 40)
-            {
-                scoreValue = scoreMaxValue - 3;
-            }
-            else if (timeSinceStart >= 40 && timeSinceStart < 50)
-            {
-                scoreValue = scoreMaxValue - 4;
-            }
-            else
-            {
-                scoreValue = scoreMaxValue - scoreMaxValue + 1;
-            }
-
-            Debug.Log("Score is: " + scoreValue + " now!");
-
             timeSinceStart++;
         }
     }
@@ -98,14 +93,6 @@ public class Question3 : QuestionData
             gameManager.playerData.AddPlayerScore(scoreValue);
         }
 
-        foreach (var button in buttonsConfirmAnswer)
-        {
-            button.GetComponent<Button>().interactable = false;
-        }
-
-        gameManager.answerDone = true;
-
-        gameObject.SetActive(false);
-        gameManager.ResetTimer(false);
+        Confirm();
     }
 }
