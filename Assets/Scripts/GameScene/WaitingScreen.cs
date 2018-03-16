@@ -17,15 +17,13 @@ public class WaitingScreen : NetworkBehaviour
     [SerializeField] private GameObject readyText_GO;
     private Text readyTextComponent;
 
-    private const uint roomSize = 3; //6
-
-    [SerializeField]
-    private Text[] playerNames;
+    private const uint roomSizeTotal = 3; //6
+    private const uint roomSizeClients = roomSizeTotal - 1; //5
 
     // Use this for initialization
     private void Start()
     {
-        //Show FPS only on Android
+        //Show FPS only on Android, if Dev Build
         if (Application.platform == RuntimePlatform.Android && Debug.isDebugBuild)
         {
             fpsTextGO.SetActive(true);
@@ -45,40 +43,27 @@ public class WaitingScreen : NetworkBehaviour
     [Server]
     private IEnumerator CheckIfAllJoined()
     {
-        readyText_GO.SetActive(true);
-
-        while (NetworkServer.connections.Count < roomSize)
+        while (NetworkServer.connections.Count < roomSizeTotal+1)
         {
-            RpcShowMessageOnClients();
-            var playersDifference = roomSize - NetworkServer.connections.Count;
-            if (playersDifference == 1)
+            RpcShowMessageOnAll(NetworkServer.connections.Count-1);
+
+            if (NetworkServer.connections.Count - 1 > 0)
             {
-                readyTextComponent.text = "Waiting for " + playersDifference + " Player...";
-            }
-            else
-            {
-                readyTextComponent.text = "Waiting for " + playersDifference + " Players...";
+                ShowStartBoard();
             }
 
             yield return new WaitForSeconds(1f);
-            Debug.Log("Connected:" + NetworkServer.connections.Count + ". Max: " + roomSize);
+            Debug.Log("Connected:" + NetworkServer.connections.Count + ". Max: " + roomSizeClients);
         }
 
-        // When all joined
-        RpcClearMessageOnAll();
-
-        ShowStartBoard();
-        Debug.Log("1 Server + " + (roomSize - 1) + " players!");
+        Debug.Log("1 Server + " + (NetworkServer.connections.Count - 1) + " players!");
     }
 
     [ClientRpc]
-    private void RpcShowMessageOnClients()
+    private void RpcShowMessageOnAll(int conCount)
     {
-        if (!NetworkServer.active)
-        {
-            readyText_GO.SetActive(true);
-            readyTextComponent.text = "We are client";
-        }
+        readyText_GO.SetActive(true);
+        readyTextComponent.text = conCount + "/" + roomSizeClients;
     }
 
     [ClientRpc]
@@ -88,9 +73,13 @@ public class WaitingScreen : NetworkBehaviour
         readyTextComponent.text = string.Empty;
     }
 
+    [Server]
     private void ShowStartBoard()
     {
-        startBoardUI_GO.SetActive(true);
+        if (!startBoardUI_GO.activeSelf)
+        {
+            startBoardUI_GO.SetActive(true);
+        }
     }
 
     public void StartGame()
@@ -116,14 +105,5 @@ public class WaitingScreen : NetworkBehaviour
         waitingScreenUI_GO.SetActive(false);
         GameManagerGo.SetActive(true);
         gameObject.SetActive(false);
-    }
-
-
-    // ToDo Networking functionality [3]. Put Player Names into UI
-    //[ClientRpc]
-    private void InitPlayerNames()
-    {
-        //Debug.Log(Network.connections.Length);
-        playerNames[Network.connections.Length].text = PlayerPrefs.GetString("PlayerName");
     }
 }
