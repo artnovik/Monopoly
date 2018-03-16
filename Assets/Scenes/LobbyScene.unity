@@ -1553,7 +1553,7 @@ MonoBehaviour:
   m_MatchHost: mm.unet.unity3d.com
   m_MatchPort: 443
   matchName: monopoly
-  matchSize: 5
+  matchSize: 6
   isNetworkActive: 0
   matchMaker: {fileID: 0}
 --- !u!4 &1376744138
