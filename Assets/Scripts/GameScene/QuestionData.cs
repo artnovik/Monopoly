@@ -2,20 +2,24 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class QuestionData : MonoBehaviour
+public class QuestionData : NetworkBehaviour
 {
     [Header("QuestionData")]
     public GameManager gameManager;
 
     public uint scoreMaxValue;
 
-    public uint answerDuration = 60;
+    public float answerDuration = 60f;
 
     public uint number;
 
     public GameObject[] questionWindows;
+
+    public GameObject[] pointWindows;
+    public GameObject[] answerWindows;
 
     public GameObject[] buttonsConfirmAnswer;
 

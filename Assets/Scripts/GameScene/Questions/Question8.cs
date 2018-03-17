@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -36,7 +36,7 @@ public class Question8 : QuestionData
         }
     }
 
-    private IEnumerator ImageShowing(uint duration)
+    private IEnumerator ImageShowing(float duration)
     {
         timeSinceStart = 0;
         answerImage.CrossFadeAlpha(1.0f, duration, false);
@@ -45,7 +45,7 @@ public class Question8 : QuestionData
         yield return new WaitForSeconds(duration);
     }
 
-    private IEnumerator ScoreValueChange(uint duration)
+    private IEnumerator ScoreValueChange(float duration)
     {
         while (timeSinceStart < duration)
         {
