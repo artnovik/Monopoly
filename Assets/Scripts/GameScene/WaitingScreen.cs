@@ -63,7 +63,6 @@ public class WaitingScreen : NetworkBehaviour
             }
 
             yield return new WaitForSeconds(1f);
-            Debug.Log("Clients: " + (NetworkServer.connections.Count - 1) + ". Max: " + roomSizeClients);
         }
     }
 
