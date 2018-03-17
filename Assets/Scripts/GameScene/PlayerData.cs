@@ -5,6 +5,7 @@ public class PlayerData : NetworkBehaviour
 {
     private string pName;
 
+    [SerializeField]
     private uint pScore;
 
     /// <summary>

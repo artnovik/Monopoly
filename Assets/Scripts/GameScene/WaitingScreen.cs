@@ -62,7 +62,7 @@ public class WaitingScreen : NetworkBehaviour
                 ShowStartBoard();
             }
 
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -111,11 +111,10 @@ public class WaitingScreen : NetworkBehaviour
             --timer;
         }
 
+        // Gameplay start point.
         RpcCountdown(timer, false);
-        // Gameplay start point. Disabling itself - don't need anymore
-        waitingScreenUI_GO.SetActive(false);
+        RpcDisableWs();
         GameManagerGo.SetActive(true);
-        gameObject.SetActive(false);
     }
 
     [ClientRpc]
@@ -123,5 +122,12 @@ public class WaitingScreen : NetworkBehaviour
     {
         countdownText_GO.SetActive(value);
         countdownTextComponent.text = timer.ToString();
+    }
+
+    [ClientRpc]
+    private void RpcDisableWs()
+    {
+        waitingScreenUI_GO.SetActive(false);
+        gameObject.SetActive(false);
     }
 }
