@@ -15,7 +15,11 @@ public class WaitingScreen : NetworkBehaviour
     [SerializeField] private GameObject waitingScreenUI_GO;
     [SerializeField] private GameObject startBoardUI_GO;
     [SerializeField] private GameObject readyText_GO;
+    [SerializeField] private GameObject countdownText_GO;
     private Text readyTextComponent;
+    private Text countdownTextComponent;
+
+    private bool started;
 
     private const uint roomSizeTotal = 3; //6
     private const uint roomSizeClients = roomSizeTotal - 1; //5
@@ -33,6 +37,7 @@ public class WaitingScreen : NetworkBehaviour
         GameManagerGo.SetActive(false);
         startBoardUI_GO.SetActive(false);
         readyTextComponent = readyText_GO.GetComponent<Text>();
+        countdownTextComponent = countdownText_GO.GetComponent<Text>();
 
         if (NetworkServer.active)
         {
@@ -45,6 +50,11 @@ public class WaitingScreen : NetworkBehaviour
     {
         while (NetworkServer.connections.Count < roomSizeTotal+1)
         {
+            if (started)
+            {
+                yield break;
+            }
+
             RpcShowMessageOnAll(NetworkServer.connections.Count-1);
 
             if (NetworkServer.connections.Count - 1 > 0)
@@ -53,10 +63,8 @@ public class WaitingScreen : NetworkBehaviour
             }
 
             yield return new WaitForSeconds(1f);
-            Debug.Log("Connected:" + NetworkServer.connections.Count + ". Max: " + roomSizeClients);
+            Debug.Log("Clients: " + (NetworkServer.connections.Count - 1) + ". Max: " + roomSizeClients);
         }
-
-        Debug.Log("1 Server + " + (NetworkServer.connections.Count - 1) + " players!");
     }
 
     [ClientRpc]
@@ -85,25 +93,36 @@ public class WaitingScreen : NetworkBehaviour
     public void StartGame()
     {
         startBoardUI_GO.SetActive(false);
-        readyText_GO.SetActive(true);
+        RpcClearMessageOnAll();
 
         StartCoroutine(StartGM());
     }
 
+    [Server]
     private IEnumerator StartGM()
     {
-        int timer = 5;
+        started = true;
+        StopCoroutine(CheckIfAllJoined());
 
+        uint timer = 5;
         while (timer > 0)
         {
-            readyText_GO.GetComponent<Text>().text = /*"Game starts in: " +*/ timer.ToString();
+            RpcCountdown(timer, true);
             yield return new WaitForSeconds(1);
             --timer;
         }
 
+        RpcCountdown(timer, false);
         // Gameplay start point. Disabling itself - don't need anymore
         waitingScreenUI_GO.SetActive(false);
         GameManagerGo.SetActive(true);
         gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    private void RpcCountdown(uint timer, bool value)
+    {
+        countdownText_GO.SetActive(value);
+        countdownTextComponent.text = timer.ToString();
     }
 }
