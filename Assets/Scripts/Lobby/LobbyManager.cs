@@ -88,13 +88,13 @@ namespace Monopoly.Lobby_v2
                 return;
             }
 
-            playerName = inputFieldNameText;
-            PlayerPrefs.SetString("PlayerName", playerName);
-
             if (InternetOn && !roomsExisting)
             {
-                CreateRoom();
+                playerName = inputFieldNameText;
+                PlayerPrefs.SetString("PlayerName", playerName);
+
                 CancelInvoke("GetRooms");
+                CreateRoom();
             }
             else
             {

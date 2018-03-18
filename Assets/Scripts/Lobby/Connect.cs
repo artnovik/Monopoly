@@ -30,19 +30,17 @@ namespace Monopoly.Lobby_v2
             {
                 _lobbyManager.status.color = _lobbyManager.colorError;
                 _lobbyManager.status.text = "Name can't be empty!";
-
                 return;
             }
-
+            else
             {
-
                 // If connected
                 _lobbyManager.status.color = _lobbyManager.colorSuccess;
+                gameObject.GetComponent<Button>().interactable = false;
                 _lobbyManager.status.text = "Connected! Wait a bit...";
+                PlayerPrefs.SetString("PlayerName", _lobbyManager.playerName);
 
                 joinRoomCallback.Invoke(match);
-
-                gameObject.GetComponent<Button>().interactable = false;
             }
         }
 
