@@ -2,11 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class GameManager : MonoBehaviour
+public class GameManager : NetworkBehaviour
 {
-    private int answeredQuestionsCount;
+    private uint answeredQuestionsCount;
     private bool timerActive;
     private bool allAnswered;
     private bool answerWindowFinished;
@@ -58,8 +59,9 @@ public class GameManager : MonoBehaviour
 
     private const string pointTag = "Point";
     private const string answerTag = "Answer";
-
-    private void Start()
+    
+    [Server]
+    public void StartGame()
     {
         Debug.Log("GameManager started.");
         questionWindow.SetActive(false);
@@ -70,23 +72,10 @@ public class GameManager : MonoBehaviour
         }
 
         playerData.Refresh();
-        StartGame();
-    }
-
-    private void Update()
-    {
-        // Host computer will only spectate
-        //if (NetworkServer.active)
-        //{
-        //    return;
-        //}
-    }
-
-    private void StartGame()
-    {
         QuestionPopUp();
     }
 
+    [Server]
     private void QuestionPopUp()
     {
         if (answeredQuestionsCount < questionsGO.Length)
@@ -98,33 +87,51 @@ public class GameManager : MonoBehaviour
             Debug.Log("Question: " + (currentQuestionData.number) +
                       ". MaxScore: " + currentQuestionData.scoreMaxValue +
                       ". Duration: " + currentQuestionData.answerDuration + " s");
-
-            PointsControl();
+            
+            if (NetworkServer.active)
+            {
+                PointsControl();
+            }
         }
         else
         {
             // If questions are ended
 
-            questionWindow.SetActive(false);
-            ScreenMessage(true, colorSuccess, "More questions on the way :)");
-            buttonExit.SetActive(true);
+            RpcTheEnd();
             Debug.Log("Final!");
         }
     }
 
+    [Server]
     private void PointsControl()
     {
-        StartCoroutine(WindowShow(5));
+        StartCoroutine(WindowShow(currentQuestionData.answerDuration));
     }
 
-    private void AnswerStart()
+    [ClientRpc]
+    private void RpcInitAnswer(uint answeredQCount)
     {
-        StartCoroutine(StartAnswerCountdown(currentQuestionData.answerDuration));
+        questionWindow.SetActive(true);
+        questionsGO[answeredQCount].SetActive(true);
+
+        if (!NetworkServer.active)
+        {
+            questionsGO[answeredQCount].GetComponent<QuestionData>().answerWindows[answeredQCount].SetActive(true);
+        }
+        else
+        {
+            currentQuestionData.pointWindows[0].SetActive(true);
+            LeaderboardControl(true);
+        }
     }
 
-    private IEnumerator WindowShow(uint durationPoint)
+    private IEnumerator WindowShow(float duration)
     {
-        foreach (GameObject currentWindow in currentQuestionData.questionWindows)
+        RpcInitAnswer(answeredQuestionsCount);
+        RpcAnswerStart(answeredQuestionsCount, questionsGO[answeredQuestionsCount].GetComponent<QuestionData>().answerDuration);
+        yield return new WaitForSeconds(duration);
+
+        /*foreach (GameObject currentWindow in currentQuestionData.questionWindows)
         {
             bool windowIsPoint = currentWindow.CompareTag(pointTag);
             bool windowIsAnswer = currentWindow.CompareTag(answerTag);
@@ -132,18 +139,15 @@ public class GameManager : MonoBehaviour
             questionWindow.SetActive(true);
             questionsGO[answeredQuestionsCount].SetActive(true);
 
-            currentWindow.SetActive(true);
-
             if (windowIsPoint)
             {
+                currentWindow.SetActive(true);
                 LeaderboardControl(true);
-                yield return new WaitForSeconds(durationPoint);
             }
             else if (windowIsAnswer)
             {
-                LeaderboardControl(false);
+                //LeaderboardControl(false);
                 answerWindowFinished = false;
-                Invoke("AnswerStart", 0f);
                 int timerTime = 0;
 
                 while (timerTime < currentQuestionData.answerDuration*2 && !answerWindowFinished)
@@ -156,10 +160,9 @@ public class GameManager : MonoBehaviour
             {
                 Debug.Log("Check tags!");
             }
-
             currentQuestionData.IncrementWindNum();
             currentWindow.SetActive(false);
-        }
+        }*/
 
         answeredQuestionsCount++;
         currentQuestionData.Confirm();
@@ -167,7 +170,13 @@ public class GameManager : MonoBehaviour
         QuestionPopUp();
     }
 
-    private IEnumerator StartAnswerCountdown(uint duration)
+    [ClientRpc]
+    private void RpcAnswerStart(uint QNum, float duration)
+    {
+        StartCoroutine(StartAnswerCountdown(QNum, questionsGO[QNum].GetComponent<QuestionData>().answerDuration));
+    }
+
+    private IEnumerator StartAnswerCountdown(uint QNum, float duration)
     {
         ResetTimer(true);
         answerDone = false;
@@ -196,7 +205,7 @@ public class GameManager : MonoBehaviour
                 // If Answer Button wasn't pressed
                 if (!answerDone)
                 {
-                    currentQuestionData.FinishAnswerIfTimerRunsOut(currentQuestionData.number);
+                    questionsGO[QNum].GetComponent<QuestionData>().FinishAnswerIfTimerRunsOut(questionsGO[QNum].GetComponent<QuestionData>().number);
                 }
 
                 // MoveFigures
@@ -287,6 +296,14 @@ public class GameManager : MonoBehaviour
         timerObject.SetActive(activeStatus);
         timerText.text = "0";
         timerFillImage.fillAmount = 0f;
+    }
+
+    [ClientRpc]
+    private void RpcTheEnd()
+    {
+        questionWindow.SetActive(false);
+        ScreenMessage(true, colorSuccess, "The End");
+        buttonExit.SetActive(true);
     }
 
     public void ExitGame()

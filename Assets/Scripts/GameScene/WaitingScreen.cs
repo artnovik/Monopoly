@@ -28,13 +28,12 @@ public class WaitingScreen : NetworkBehaviour
     private void Start()
     {
         //Show FPS only on Android, if Dev Build
-        if (Application.platform == RuntimePlatform.Android && Debug.isDebugBuild)
-        {
-            fpsTextGO.SetActive(true);
-        }
+        //if (Application.platform == RuntimePlatform.Android && Debug.isDebugBuild)
+        //{
+        //    fpsTextGO.SetActive(true);
+        //}
 
         waitingScreenUI_GO.SetActive(true);
-        GameManagerGo.SetActive(false);
         startBoardUI_GO.SetActive(false);
         readyTextComponent = readyText_GO.GetComponent<Text>();
         countdownTextComponent = countdownText_GO.GetComponent<Text>();
@@ -94,7 +93,10 @@ public class WaitingScreen : NetworkBehaviour
         startBoardUI_GO.SetActive(false);
         RpcClearMessageOnAll();
 
-        StartCoroutine(StartGM());
+        if (NetworkServer.active)
+        {
+            StartCoroutine(StartGM());
+        }
     }
 
     [Server]
@@ -113,8 +115,8 @@ public class WaitingScreen : NetworkBehaviour
 
         // Gameplay start point.
         RpcCountdown(timer, false);
+        GameManagerGo.GetComponent<GameManager>().StartGame();
         RpcDisableWs();
-        GameManagerGo.SetActive(true);
     }
 
     [ClientRpc]
