@@ -7,12 +7,16 @@ using UnityEngine.UI;
 
 public class GameManager : NetworkBehaviour
 {
-    private uint answeredQuestionsCount;
+    [SyncVar]
+    private uint answeredQuestionsGlobalCount;
+
+    private uint answeredQuestionsLocalCount;
     private bool timerActive;
     private bool allAnswered;
     private bool answerWindowFinished;
 
     [HideInInspector]
+    [SyncVar]
     public bool answerDone;
 
     private Color32 colorProcess = new Color32(225, 216, 98, 255);
@@ -71,18 +75,24 @@ public class GameManager : NetworkBehaviour
             question.SetActive(false);
         }
 
-        playerData.Refresh();
-        QuestionPopUp();
+        RpcAllPlayersRefresh();
+        RpcQuestionPopUp();
     }
 
-    [Server]
-    private void QuestionPopUp()
+    [ClientRpc]
+    private void RpcAllPlayersRefresh()
     {
-        if (answeredQuestionsCount < questionsGO.Length)
+        playerData.Refresh();
+    }
+
+    [ClientRpc]
+    private void RpcQuestionPopUp()
+    {
+        if (answeredQuestionsGlobalCount < questionsGO.Length)
         {
             // If there's still questions in list
 
-            currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
+            currentQuestionData = questionsGO[answeredQuestionsGlobalCount].GetComponent<QuestionData>();
 
             Debug.Log("Question: " + (currentQuestionData.number) +
                       ". MaxScore: " + currentQuestionData.scoreMaxValue +
@@ -108,27 +118,10 @@ public class GameManager : NetworkBehaviour
         StartCoroutine(WindowShow(currentQuestionData.answerDuration));
     }
 
-    [ClientRpc]
-    private void RpcInitAnswer(uint answeredQCount)
-    {
-        questionWindow.SetActive(true);
-        questionsGO[answeredQCount].SetActive(true);
-
-        if (!NetworkServer.active)
-        {
-            questionsGO[answeredQCount].GetComponent<QuestionData>().answerWindows[answeredQCount].SetActive(true);
-        }
-        else
-        {
-            currentQuestionData.pointWindows[0].SetActive(true);
-            LeaderboardControl(true);
-        }
-    }
-
     private IEnumerator WindowShow(float duration)
     {
-        RpcInitAnswer(answeredQuestionsCount);
-        RpcAnswerStart(answeredQuestionsCount, questionsGO[answeredQuestionsCount].GetComponent<QuestionData>().answerDuration);
+        RpcInitWindows(answeredQuestionsLocalCount);
+        RpcCountdownStart(answeredQuestionsGlobalCount, currentQuestionData.answerDuration);
         yield return new WaitForSeconds(duration);
 
         /*foreach (GameObject currentWindow in currentQuestionData.questionWindows)
@@ -137,7 +130,7 @@ public class GameManager : NetworkBehaviour
             bool windowIsAnswer = currentWindow.CompareTag(answerTag);
 
             questionWindow.SetActive(true);
-            questionsGO[answeredQuestionsCount].SetActive(true);
+            questionsGO[answeredQuestionsGlobalCount].SetActive(true);
 
             if (windowIsPoint)
             {
@@ -164,16 +157,33 @@ public class GameManager : NetworkBehaviour
             currentWindow.SetActive(false);
         }*/
 
-        answeredQuestionsCount++;
+        answeredQuestionsGlobalCount++;
         currentQuestionData.Confirm();
         Debug.Log("Question " + currentQuestionData.number + " fade out");
-        QuestionPopUp();
+        RpcQuestionPopUp();
     }
 
     [ClientRpc]
-    private void RpcAnswerStart(uint QNum, float duration)
+    private void RpcInitWindows(uint answeredQCount)
     {
-        StartCoroutine(StartAnswerCountdown(QNum, questionsGO[QNum].GetComponent<QuestionData>().answerDuration));
+        questionWindow.SetActive(true);
+        questionsGO[answeredQCount].SetActive(true);
+
+        if (!NetworkServer.active)
+        {
+            questionsGO[answeredQCount].GetComponent<QuestionData>().answerWindows[answeredQCount].SetActive(true);
+        }
+        else
+        {
+            currentQuestionData.pointWindows[0].SetActive(true);
+            LeaderboardControl(true);
+        }
+    }
+
+    [ClientRpc]
+    private void RpcCountdownStart(uint QNum, float duration)
+    {
+        StartCoroutine(StartAnswerCountdown(QNum, duration));
     }
 
     private IEnumerator StartAnswerCountdown(uint QNum, float duration)
@@ -205,7 +215,7 @@ public class GameManager : NetworkBehaviour
                 // If Answer Button wasn't pressed
                 if (!answerDone)
                 {
-                    questionsGO[QNum].GetComponent<QuestionData>().FinishAnswerIfTimerRunsOut(questionsGO[QNum].GetComponent<QuestionData>().number);
+                    currentQuestionData.FinishAnswerIfTimerRunsOut(currentQuestionData.number);
                 }
 
                 // MoveFigures
@@ -227,11 +237,11 @@ public class GameManager : NetworkBehaviour
             {
                 var target = new Vector3(waypointsTransforms[waypointsTransforms.Length - 1].position.x, waypointsTransforms[waypointsTransforms.Length - 1].position.y, waypointsTransforms[waypointsTransforms.Length - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
-                ScreenMessage(true, colorProcess, "Board limit reached\nWill move further, once board is sliced");
+                //ScreenMessage(true, colorProcess, "Board limit reached\nWill move further, once board is sliced");
             }
             else
             {
-                ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
+                //ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
                 var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
             }
