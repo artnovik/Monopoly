@@ -254,7 +254,7 @@ public class GameManager : NetworkBehaviour
 
     private static IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
     {
-        const float closeEnough = 0.05f;
+        const float closeEnough = 0.2f;
         float distance = (figureTransform.position - targetTransform).magnitude;
 
         var wait = new WaitForEndOfFrame();
