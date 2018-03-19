@@ -5,7 +5,6 @@ public class PlayerData : NetworkBehaviour
 {
     private string pName;
 
-    [SerializeField]
     private uint pScore;
 
     /// <summary>
@@ -42,5 +41,10 @@ public class PlayerData : NetworkBehaviour
     {
         pName = "Player " + PlayerPrefs.GetString("PlayerName");
         pScore = 0;
+    }
+
+    public void PlayerDataDebugInfo()
+    {
+        Debug.Log("PlayerName is: " + pName + ". Score: " + pScore);
     }
 }
