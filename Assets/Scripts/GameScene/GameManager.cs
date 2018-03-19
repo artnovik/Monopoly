@@ -236,14 +236,14 @@ public class GameManager : NetworkBehaviour
             if (playerScore > waypointsTransforms.Length)
             {
                 var target = new Vector3(waypointsTransforms[waypointsTransforms.Length - 1].position.x, waypointsTransforms[waypointsTransforms.Length - 1].position.y, waypointsTransforms[waypointsTransforms.Length - 1].position.z);
-                StartCoroutine(Movement(figureTransform, target));
+                StartCoroutine(Movement(figureTransform, target, playerScore));
                 //ScreenMessage(true, colorProcess, "Board limit reached\nWill move further, once board is sliced");
             }
             else
             {
-                //ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
+                ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
                 var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
-                StartCoroutine(Movement(figureTransform, target));
+                StartCoroutine(Movement(figureTransform, target, playerScore));
             }
         }
         else
@@ -252,7 +252,7 @@ public class GameManager : NetworkBehaviour
         }
     }
 
-    private static IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
+    private IEnumerator Movement(Transform figureTransform, Vector3 targetTransform, uint pScore)
     {
         const float closeEnough = 0.2f;
         float distance = (figureTransform.position - targetTransform).magnitude;
@@ -272,6 +272,8 @@ public class GameManager : NetworkBehaviour
 
         // Complete the motion to prevent position mistakes
         figureTransform.position = targetTransform;
+        var waypointRotation = waypointsTransforms[pScore - 1].rotation.eulerAngles;
+        figureTransform.rotation = Quaternion.Euler(waypointRotation);
 
         Debug.Log("Movement complete");
     }
