@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.Networking.Match;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,122 +13,76 @@ public class WaitingScreen : NetworkBehaviour
 
     [SerializeField] private GameObject waitingScreenUI_GO;
     [SerializeField] private GameObject startBoardUI_GO;
-    [SerializeField] private GameObject readyText_GO;
     [SerializeField] private GameObject countdownText_GO;
-    private Text readyTextComponent;
-    private Text countdownTextComponent;
-
-    private bool started;
-
-    private const uint roomSizeTotal = 3; //6
-    private const uint roomSizeClients = roomSizeTotal - 1; //5
 
     // Use this for initialization
     private void Start()
     {
-        //Show FPS only on Android, if Dev Build
-        //if (Application.platform == RuntimePlatform.Android && Debug.isDebugBuild)
+        //Show FPS only on Android
+        //if (Application.platform == RuntimePlatform.Android)
         //{
         //    fpsTextGO.SetActive(true);
         //}
 
         waitingScreenUI_GO.SetActive(true);
         startBoardUI_GO.SetActive(false);
-        readyTextComponent = readyText_GO.GetComponent<Text>();
-        countdownTextComponent = countdownText_GO.GetComponent<Text>();
 
+        // ToDo Move this to "When all joined"
+        ShowStartBoard();
+
+        //if (!isLocalPlayer)
+        //{
+        //    InitPlayerNames();
+        //}
+    }
+
+    // ToDo Networking functionality [1]
+
+    /*public void OnServerConnect(NetworkConnection _connection)
+    {
+        Debug.Log("Player J!");
+    }*/
+
+    // ToDo Networking functionality [2]
+
+    /*private void Update()
+    {
         if (NetworkServer.active)
         {
-            StartCoroutine(CheckIfAllJoined());
+            InitPlayerNames();
         }
-    }
+    }*/
 
-    [Server]
-    private IEnumerator CheckIfAllJoined()
-    {
-        while (NetworkServer.connections.Count < roomSizeTotal+1)
-        {
-            if (started)
-            {
-                yield break;
-            }
-
-            RpcShowMessageOnAll(NetworkServer.connections.Count-1);
-
-            if (NetworkServer.connections.Count - 1 > 0)
-            {
-                ShowStartBoard();
-            }
-
-            yield return new WaitForSeconds(0.5f);
-        }
-    }
-
-    [ClientRpc]
-    private void RpcShowMessageOnAll(int conCount)
-    {
-        readyText_GO.SetActive(true);
-        readyTextComponent.text = conCount + "/" + roomSizeClients;
-    }
-
-    [ClientRpc]
-    private void RpcClearMessageOnAll()
-    {
-        readyText_GO.SetActive(false);
-        readyTextComponent.text = string.Empty;
-    }
-
-    [Server]
     private void ShowStartBoard()
     {
-        if (!startBoardUI_GO.activeSelf)
-        {
-            startBoardUI_GO.SetActive(true);
-        }
+        startBoardUI_GO.SetActive(true);
     }
 
     public void StartGame()
     {
+        // ToDo: When all clicked
         startBoardUI_GO.SetActive(false);
-        RpcClearMessageOnAll();
+        countdownText_GO.SetActive(true);
 
-        if (NetworkServer.active)
-        {
-            StartCoroutine(StartGM());
-        }
+        StartCoroutine(StartGM());
     }
 
-    [Server]
+    // ToDo: Start when all are joined
     private IEnumerator StartGM()
     {
-        started = true;
-        StopCoroutine(CheckIfAllJoined());
+        int timer = 5;
 
-        uint timer = 5;
         while (timer > 0)
         {
-            RpcCountdown(timer, true);
+            countdownText_GO.GetComponent<Text>().text = timer.ToString();
             yield return new WaitForSeconds(1);
             --timer;
         }
 
-        // Gameplay start point.
-        RpcCountdown(timer, false);
-        GameManagerGo.GetComponent<GameManager>().StartGame();
-        RpcDisableWs();
-    }
-
-    [ClientRpc]
-    private void RpcCountdown(uint timer, bool value)
-    {
-        countdownText_GO.SetActive(value);
-        countdownTextComponent.text = timer.ToString();
-    }
-
-    [ClientRpc]
-    private void RpcDisableWs()
-    {
+        // Gameplay start point. Disabling itself - don't need anymore
         waitingScreenUI_GO.SetActive(false);
+        GameManagerGo.SetActive(true);
+        GameManagerGo.GetComponent<GameManager>().StartGame();
         gameObject.SetActive(false);
     }
 }

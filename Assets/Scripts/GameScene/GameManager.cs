@@ -2,21 +2,16 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class GameManager : NetworkBehaviour
+public class GameManager : MonoBehaviour
 {
-    [SyncVar]
-    private uint answeredQuestionsGlobalCount;
-
-    private uint answeredQuestionsLocalCount;
+    private int answeredQuestionsCount;
     private bool timerActive;
     private bool allAnswered;
     private bool answerWindowFinished;
 
     [HideInInspector]
-    [SyncVar]
     public bool answerDone;
 
     private Color32 colorProcess = new Color32(225, 216, 98, 255);
@@ -24,6 +19,7 @@ public class GameManager : NetworkBehaviour
     private Color32 colorError = new Color32(225, 98, 98, 255);
 
     public PlayerData playerData;
+    public Transform[] cameraPositionsTransforms;
 
     [SerializeField]
     private Transform playerFigureTransform;
@@ -63,8 +59,7 @@ public class GameManager : NetworkBehaviour
 
     private const string pointTag = "Point";
     private const string answerTag = "Answer";
-    
-    [Server]
+
     public void StartGame()
     {
         Debug.Log("GameManager started.");
@@ -75,72 +70,65 @@ public class GameManager : NetworkBehaviour
             question.SetActive(false);
         }
 
-        RpcAllPlayersRefresh();
-        RpcQuestionPopUp();
-    }
-
-    [ClientRpc]
-    private void RpcAllPlayersRefresh()
-    {
         playerData.Refresh();
-    }
 
-    [ClientRpc]
-    private void RpcQuestionPopUp()
+        QuestionPopUp();
+    }
+    
+    private void QuestionPopUp()
     {
-        if (answeredQuestionsGlobalCount < questionsGO.Length)
+        if (answeredQuestionsCount < questionsGO.Length)
         {
             // If there's still questions in list
 
-            currentQuestionData = questionsGO[answeredQuestionsGlobalCount].GetComponent<QuestionData>();
+            currentQuestionData = questionsGO[answeredQuestionsCount].GetComponent<QuestionData>();
 
             Debug.Log("Question: " + (currentQuestionData.number) +
                       ". MaxScore: " + currentQuestionData.scoreMaxValue +
                       ". Duration: " + currentQuestionData.answerDuration + " s");
-            
-            if (NetworkServer.active)
-            {
-                PointsControl();
-            }
+
+            PointsControl();
         }
         else
         {
             // If questions are ended
 
-            RpcTheEnd();
-            Debug.Log("Final!");
+            TheEnd();
         }
     }
 
-    [Server]
     private void PointsControl()
     {
-        StartCoroutine(WindowShow(currentQuestionData.answerDuration));
+        StartCoroutine(WindowShow(5));
     }
 
-    private IEnumerator WindowShow(float duration)
+    private void AnswerStart()
     {
-        RpcInitWindows(answeredQuestionsLocalCount);
-        RpcCountdownStart(answeredQuestionsGlobalCount, currentQuestionData.answerDuration);
-        yield return new WaitForSeconds(duration);
+        StartCoroutine(StartAnswerCountdown(currentQuestionData.answerDuration));
+    }
 
-        /*foreach (GameObject currentWindow in currentQuestionData.questionWindows)
+    private IEnumerator WindowShow(uint durationPoint)
+    {
+        foreach (GameObject currentWindow in currentQuestionData.questionWindows)
         {
             bool windowIsPoint = currentWindow.CompareTag(pointTag);
             bool windowIsAnswer = currentWindow.CompareTag(answerTag);
 
             questionWindow.SetActive(true);
-            questionsGO[answeredQuestionsGlobalCount].SetActive(true);
+            questionsGO[answeredQuestionsCount].SetActive(true);
+
+            currentWindow.SetActive(true);
 
             if (windowIsPoint)
             {
-                currentWindow.SetActive(true);
                 LeaderboardControl(true);
+                yield return new WaitForSeconds(durationPoint);
             }
             else if (windowIsAnswer)
             {
-                //LeaderboardControl(false);
+                LeaderboardControl(false);
                 answerWindowFinished = false;
+                Invoke("AnswerStart", 0f);
                 int timerTime = 0;
 
                 while (timerTime < currentQuestionData.answerDuration*2 && !answerWindowFinished)
@@ -153,40 +141,18 @@ public class GameManager : NetworkBehaviour
             {
                 Debug.Log("Check tags!");
             }
+
             currentQuestionData.IncrementWindNum();
             currentWindow.SetActive(false);
-        }*/
+        }
 
-        answeredQuestionsGlobalCount++;
+        answeredQuestionsCount++;
         currentQuestionData.Confirm();
         Debug.Log("Question " + currentQuestionData.number + " fade out");
-        RpcQuestionPopUp();
+        QuestionPopUp();
     }
 
-    [ClientRpc]
-    private void RpcInitWindows(uint answeredQCount)
-    {
-        questionWindow.SetActive(true);
-        questionsGO[answeredQCount].SetActive(true);
-
-        if (!NetworkServer.active)
-        {
-            questionsGO[answeredQCount].GetComponent<QuestionData>().answerWindows[answeredQCount].SetActive(true);
-        }
-        else
-        {
-            currentQuestionData.pointWindows[0].SetActive(true);
-            LeaderboardControl(true);
-        }
-    }
-
-    [ClientRpc]
-    private void RpcCountdownStart(uint QNum, float duration)
-    {
-        StartCoroutine(StartAnswerCountdown(QNum, duration));
-    }
-
-    private IEnumerator StartAnswerCountdown(uint QNum, float duration)
+    private IEnumerator StartAnswerCountdown(float duration)
     {
         ResetTimer(true);
         answerDone = false;
@@ -196,7 +162,7 @@ public class GameManager : NetworkBehaviour
 
         while (timerActive)
         {
-            if (timerTime < duration && !answerDone /*|| !allAnswered*/)
+            if (timerTime < duration && !answerDone)
             {
                 yield return new WaitForSeconds(1);
                 timerTime++;
@@ -218,6 +184,7 @@ public class GameManager : NetworkBehaviour
                     currentQuestionData.FinishAnswerIfTimerRunsOut(currentQuestionData.number);
                 }
 
+                CameraMoveCheck();
                 // MoveFigures
                 MoveFigures(playerFigureTransform, playerData.GetPlayerScore());
                 yield return new WaitForSeconds(5f);
@@ -241,7 +208,7 @@ public class GameManager : NetworkBehaviour
             }
             else
             {
-                //ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
+                ScreenMessage(true, colorProcess, "Movement (Regarding to gained score)\nCurrentScore: " + playerData.GetPlayerScore());
                 var target = new Vector3(waypointsTransforms[playerScore - 1].position.x, waypointsTransforms[playerScore - 1].position.y, waypointsTransforms[playerScore - 1].position.z);
                 StartCoroutine(Movement(figureTransform, target));
             }
@@ -254,7 +221,7 @@ public class GameManager : NetworkBehaviour
 
     private static IEnumerator Movement(Transform figureTransform, Vector3 targetTransform)
     {
-        const float closeEnough = 0.05f;
+        const float closeEnough = 0.2f;
         float distance = (figureTransform.position - targetTransform).magnitude;
 
         var wait = new WaitForEndOfFrame();
@@ -274,6 +241,25 @@ public class GameManager : NetworkBehaviour
         figureTransform.position = targetTransform;
 
         Debug.Log("Movement complete");
+    }
+
+    private void CameraMoveCheck()
+    {
+        if (playerData.GetPlayerScore() >= 10 && playerData.GetPlayerScore() <= 20)
+        {
+            Camera.main.transform.position = new Vector3(cameraPositionsTransforms[0].position.x, cameraPositionsTransforms[0].position.y, cameraPositionsTransforms[0].position.z);
+            Camera.main.transform.rotation = new Quaternion(cameraPositionsTransforms[0].rotation.x, cameraPositionsTransforms[0].rotation.y, cameraPositionsTransforms[0].rotation.z, cameraPositionsTransforms[0].rotation.w);
+        }
+        else if (playerData.GetPlayerScore() >= 20 && playerData.GetPlayerScore() <= 30)
+        {
+            Camera.main.transform.position = new Vector3(cameraPositionsTransforms[1].position.x, cameraPositionsTransforms[1].position.y, cameraPositionsTransforms[1].position.z);
+            Camera.main.transform.rotation = new Quaternion(cameraPositionsTransforms[1].rotation.x, cameraPositionsTransforms[1].rotation.y, cameraPositionsTransforms[1].rotation.z, cameraPositionsTransforms[1].rotation.w);
+        }
+        else if ((playerData.GetPlayerScore() >= 30 && playerData.GetPlayerScore() <= 40))
+        {
+            Camera.main.transform.position = new Vector3(cameraPositionsTransforms[2].position.x, cameraPositionsTransforms[2].position.y, cameraPositionsTransforms[2].position.z);
+            Camera.main.transform.rotation = new Quaternion(cameraPositionsTransforms[2].rotation.x, cameraPositionsTransforms[2].rotation.y, cameraPositionsTransforms[2].rotation.z, cameraPositionsTransforms[2].rotation.w);
+        }
     }
 
     private void LeaderboardControl(bool activeStatus)
@@ -308,12 +294,12 @@ public class GameManager : NetworkBehaviour
         timerFillImage.fillAmount = 0f;
     }
 
-    [ClientRpc]
-    private void RpcTheEnd()
+    private void TheEnd()
     {
         questionWindow.SetActive(false);
-        ScreenMessage(true, colorSuccess, "The End");
+        ScreenMessage(true, colorSuccess, "End\n(More questions can be added fast)");
         buttonExit.SetActive(true);
+        Debug.Log("Final!");
     }
 
     public void ExitGame()
