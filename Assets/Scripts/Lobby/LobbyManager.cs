@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Photon;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.Networking.Match;
@@ -6,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Monopoly.Lobby_v2
 {
-    public class LobbyManager : MonoBehaviour
+    public class LobbyManager : PunBehaviour
     {
         private List<GameObject> roomList = new List<GameObject>();
 
