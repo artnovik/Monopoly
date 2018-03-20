@@ -9,7 +9,7 @@ namespace Monopoly.Lobby_v2
         public delegate void JoinRoomDelegate(MatchInfoSnapshot _match);
         private JoinRoomDelegate joinRoomCallback;
 
-        private LobbyManager _lobbyManager;
+        private PhotonLauncher _photonLauncher;
 
         public MatchInfoSnapshot match;
 
@@ -21,24 +21,24 @@ namespace Monopoly.Lobby_v2
 
         public void JoinRoom()
         {
-            _lobbyManager = GameObject.Find("LobbyManager").GetComponent<LobbyManager>();
+            _photonLauncher = GameObject.Find("LobbyManager").GetComponent<PhotonLauncher>();
 
-            _lobbyManager.playerName = GameObject.Find("InputFieldName").GetComponent<InputField>().text;
+            _photonLauncher.playerName = GameObject.Find("InputFieldName").GetComponent<InputField>().text;
 
             // Checking PlayerName Input
-            if (string.IsNullOrEmpty(_lobbyManager.playerName))
+            if (string.IsNullOrEmpty(_photonLauncher.playerName))
             {
-                _lobbyManager.status.color = _lobbyManager.colorError;
-                _lobbyManager.status.text = "Name can't be empty!";
+                _photonLauncher.status.color = _photonLauncher.colorError;
+                _photonLauncher.status.text = "Name can't be empty!";
                 return;
             }
             else
             {
                 // If connected
-                _lobbyManager.status.color = _lobbyManager.colorSuccess;
+                _photonLauncher.status.color = _photonLauncher.colorSuccess;
                 gameObject.GetComponent<Button>().interactable = false;
-                _lobbyManager.status.text = "Connected! Wait a bit...";
-                PlayerPrefs.SetString("PlayerName", _lobbyManager.playerName);
+                _photonLauncher.status.text = "Connected! Wait a bit...";
+                PlayerPrefs.SetString("PlayerName", _photonLauncher.playerName);
 
                 joinRoomCallback.Invoke(match);
             }
