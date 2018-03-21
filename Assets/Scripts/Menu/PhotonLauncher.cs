@@ -19,7 +19,6 @@ namespace Monopoly.Lobby_v2
         [SerializeField]
         private Transform buttonConnectParent;
 
-        [HideInInspector]
         public Text status;
 
         [HideInInspector]
@@ -55,6 +54,7 @@ namespace Monopoly.Lobby_v2
             if (PhotonNetwork.connected)
             {
                 PhotonNetwork.JoinRandomRoom();
+                SetStatusText("Connected!", colorSuccess);
             }
             else
             {
@@ -72,6 +72,7 @@ namespace Monopoly.Lobby_v2
         {
             Debug.Log("No random room available, so create one");
             PhotonNetwork.CreateRoom(roomName, new RoomOptions { MaxPlayers = maxPlayersPerRoom }, null);
+            SetStatusText("Game created!", colorSuccess);
         }
 
         public override void OnJoinedRoom()

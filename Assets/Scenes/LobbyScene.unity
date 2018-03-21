@@ -157,7 +157,7 @@ MonoBehaviour:
   buttonConnect: {fileID: 0}
   buttonCreate: {fileID: 0}
   buttonConnectParent: {fileID: 0}
-  status: {fileID: 0}
+  status: {fileID: 1458920501}
   playerName: 
   colorProcess:
     serializedVersion: 2
